@@ -1,30 +1,66 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 
-public class HexGrid : MonoBehaviour
+public class HexGridManager : MonoBehaviour
 {
-    [SerializeField] private GameObject gridPrefab;
-    [SerializeField] private int radius;
+    [SerializeField] private int hexCircleAmount;
+
+    [Range(0, 100)]
+    [SerializeField] private float innerSize;
+
+    [Range(0, 100)]
+    [SerializeField] private float outerSize;
+    [SerializeField] private float height;
     [SerializeField] private Vector3 worldPos;
     private Dictionary<GameObject, HexCoord> hexGrids = new Dictionary<GameObject, HexCoord>();
+    private HexRenderer hexRenderer;
+    void Awake()
+    {
+        hexRenderer = FindAnyObjectByType<HexRenderer>();
+    }
     void Start()
     {
-        for (int q = -radius; q <= radius; q++)
+        HexGeneration();
+    }
+
+    private void HexGeneration()
+    {
+        if (hexRenderer == null)
+            return;
+        hexRenderer.ClearMeshData();
+        ClearDict();
+        for (int q = -hexCircleAmount; q <= hexCircleAmount; q++)
         {
-            for (int r = -radius; r <= radius; r++)
+            for (int r = -hexCircleAmount; r <= hexCircleAmount; r++)
             {
-                if (Mathf.Abs(q + r) <= radius)
+                if (Mathf.Abs(q + r) <= hexCircleAmount)
                 {
                     HexCoord currentHex = new HexCoord(q, r);
-                    GameObject name = Instantiate(gridPrefab);
-                    name.transform.position = currentHex.GetWorldPosition();
-                    name.name = $"HexCoard[{currentHex.q},{currentHex.r}]";
+                    GameObject name = new GameObject();
                     hexGrids.Add(name, currentHex);
                 }
             }
         }
+        int i = 0;
+        foreach (var a in hexGrids)
+        {
+            hexRenderer.SetVerticesAndTriangles(a.Value.GetWorldPosition(outerSize), i, outerSize, innerSize, height);
+            i++;
+        }
+        hexRenderer.GenerateMesh();
     }
+    private void ClearDict()
+    {
+        foreach (var a in hexGrids)
+        {
+            Destroy(a.Key);
+        }
+        hexGrids.Clear();
+    }
+
+
     [ContextMenu("Test")]
     public void TestWorldPosition()
     {
@@ -38,9 +74,22 @@ public class HexGrid : MonoBehaviour
 
         foreach (var a in hexGrids)
         {
-            Gizmos.DrawSphere(a.Value.GetWorldPosition(), 0.2f);
+            Gizmos.DrawSphere(a.Value.GetWorldPosition(outerSize), 0.2f);
         }
         Gizmos.DrawSphere(worldPos, 0.2f);
+    }
+    private void OnValidate()
+    {
+        if (outerSize < innerSize)
+            outerSize = innerSize;
+       
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.delayCall += () =>
+        {
+            if (this != null)
+                HexGeneration();
+        };
+#endif
     }
 }
 [Serializable]
@@ -62,10 +111,10 @@ public struct HexCoord
         this.q = q;
         this.r = r;
     }
-    public Vector3 GetWorldPosition()
+    public Vector3 GetWorldPosition(float size)
     {
-        float x = Mathf.Sqrt(3) * q + Mathf.Sqrt(3) / 2f * r;
-        float z = 3f / 2f * r;
+        float x = Mathf.Sqrt(3) * q * size + Mathf.Sqrt(3) * size / 2f * r;
+        float z = 3f * size / 2f * r;
         return new Vector3(x, 0, z);
     }
     public HexCoord GetNeighbor(int index)

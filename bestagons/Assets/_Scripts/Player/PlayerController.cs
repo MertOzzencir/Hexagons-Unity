@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Horizontal Movmenet")]
+    [Header("Locomotion")]
     [SerializeField] private float maxForce;
     [SerializeField] private float acceleration;
     [SerializeField] private AnimationCurve accelerationFactorFromDot;
@@ -10,13 +10,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AnimationCurve MaxAccelerationForceFactorFromDot;
     [SerializeField] private Vector3 forceScale;
 
-    [Header("Vertical Movement")]
+    [Header("Rotation")]
     [SerializeField] private float rideHeight;
     [SerializeField] private float rideSpringStrength;
     [SerializeField] private float rideSpringDamper;
     [SerializeField] private Transform downDirection;
     [SerializeField] private float uprightCorrectionStrength;
     [SerializeField] private float uprightCorrectionDamper;
+
+
     private Ray ray;
     private Vector3 offSetDirection;
     private float offSetForce;
@@ -26,13 +28,47 @@ public class PlayerController : MonoBehaviour
     private Vector3 mGoalVel;
     private Vector3 locoMovement;
     private Vector3 lookDirection;
+    private Quaternion upRight;
+    private Camera cam;
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         Quaternion deneme = Quaternion.Euler(30, 30, 30);
         Debug.Log(Quaternion.Inverse(deneme));
+        cam = Camera.main;
     }
     void Update()
+    {
+        Vector3 forward = cam.transform.forward;
+        forward.y = 0;
+        Vector3 right = cam.transform.right;
+        right.y = 0;
+        lookDirection = right * InputManager.Instance.MovementVector().x + forward * InputManager.Instance.MovementVector().y;
+        lookDirection.y = 0;
+        lookDirection.Normalize();
+        if (InputManager.Instance.MovementVector().magnitude > 0.001f)
+        {
+            upRight = Quaternion.LookRotation(lookDirection, Vector3.up);
+        }
+        else
+            upRight = Quaternion.Euler(0, transform.eulerAngles.y, 0);
+    }
+    public void Movement(Vector3 directionMovement)
+    {
+        Vector3 currentVelocity = mGoalVel.normalized;
+
+        float velDot = Vector3.Dot(directionMovement, currentVelocity);
+        float accel = acceleration * accelerationFactorFromDot.Evaluate(velDot);
+
+        Vector3 goalVel = directionMovement * maxForce;
+        mGoalVel = Vector3.MoveTowards(mGoalVel, goalVel, accel * Time.fixedDeltaTime);
+
+        locoMovement = (mGoalVel - rb.linearVelocity) / Time.fixedDeltaTime;
+
+        float maxAccel = maxAccelForce * MaxAccelerationForceFactorFromDot.Evaluate(velDot);
+        locoMovement = Vector3.ClampMagnitude(locoMovement, maxAccel);
+    }
+    void FixedUpdate()
     {
         ray = new Ray(transform.position, downDirection.forward);
 
@@ -53,43 +89,12 @@ public class PlayerController : MonoBehaviour
             float relVel = rayDirVel - otherDirVel;
 
             float x = hit.distance - rideHeight;
-            //Debug.Log("Distance: " + x);
-            //Debug.Log("relVel: " + relVel);
-            //Debug.Log("otherDirVel: " + otherDirVel);
             offSetForce = x * rideSpringStrength - relVel * rideSpringDamper;
             offSetDirection = rayDir;
-            //Debug.Log(offSetForce);
 
         }
-        Quaternion upright;
-        lookDirection = Camera.main.transform.right * InputManager.Instance.MovementNormalized().x + Camera.main.transform.forward * InputManager.Instance.MovementNormalized().y;
-        lookDirection.y = 0;
-        if (InputManager.Instance.MovementNormalized().magnitude > 0.001f)
-        {
-            upright = Quaternion.LookRotation(lookDirection, Vector3.up);
-        }
-        else
-            upright = Quaternion.Euler(0, transform.eulerAngles.y, 0);
-        UpdateUprightForce(upright);
-    }
-    public void Movement(Vector3 directionMovement)
-    {
-        Vector3 currentVelocity = mGoalVel.normalized;
-
-        float velDot = Vector3.Dot(directionMovement, currentVelocity);
-        float accel = acceleration * accelerationFactorFromDot.Evaluate(velDot);
-
-        Vector3 goalVel = directionMovement * maxForce;
-        mGoalVel = Vector3.MoveTowards(mGoalVel, goalVel, accel * Time.deltaTime);
-
-        locoMovement = (mGoalVel - rb.linearVelocity) / Time.fixedDeltaTime;
-
-        float maxAccel = maxAccelForce * MaxAccelerationForceFactorFromDot.Evaluate(velDot);
-        locoMovement = Vector3.ClampMagnitude(locoMovement, maxAccel);
-    }
-    void FixedUpdate()
-    {
         Movement(lookDirection);
+        UpdateUprightForce(upRight);
         rb.AddForce(offSetDirection * offSetForce);
         rb.AddForce(Vector3.Scale(locoMovement * rb.mass, forceScale));
         rb.AddTorque((rotAxis * (rotRadians * uprightCorrectionStrength)) - (rb.angularVelocity * uprightCorrectionDamper));
