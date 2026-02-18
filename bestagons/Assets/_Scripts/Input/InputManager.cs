@@ -5,6 +5,8 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager Instance;
     public static event Action<bool> OnRightClick;
+    public static event Action<bool> OnLeftClick;
+
     private InputBase inputBase;
 
 
@@ -24,11 +26,17 @@ public class InputManager : MonoBehaviour
     {
         OnRightClick?.Invoke(context.performed);
     }
+    private void OnLeftClickAction(UnityEngine.InputSystem.InputAction.CallbackContext context)
+    {
+        OnLeftClick?.Invoke(context.performed);
+    }
     void OnEnable()
     {
         inputBase.Enable();
         inputBase.Player.RightClick.performed += OnRightClickAction;
         inputBase.Player.RightClick.canceled += OnRightClickAction;
+        inputBase.Player.LeftClick.performed += OnLeftClickAction;
+        inputBase.Player.LeftClick.canceled += OnLeftClickAction;
     }
 
     void OnDisable()
@@ -36,6 +44,8 @@ public class InputManager : MonoBehaviour
         inputBase.Disable();
         inputBase.Player.RightClick.performed -= OnRightClickAction;
         inputBase.Player.RightClick.canceled -= OnRightClickAction;
+        inputBase.Player.LeftClick.performed -= OnLeftClickAction;
+        inputBase.Player.LeftClick.canceled -= OnLeftClickAction;
     }
 
 }

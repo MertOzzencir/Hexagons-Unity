@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 4120871104869012141}
   - component: {fileID: 1398908429642958680}
   - component: {fileID: 3248002209177907513}
+  - component: {fileID: 3615678807736192110}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -220,7 +221,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 090f6e07ffcee714b8b090b52833d5d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  maxForce: 10
+  maxForce: 8
   acceleration: 30
   accelerationFactorFromDot:
     serializedVersion: 2
@@ -272,7 +273,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   forceScale: {x: 1, y: 0, z: 1}
-  rideHeight: 1.5
+  rideHeight: 1.6
   rideSpringStrength: 200
   rideSpringDamper: 30
   downDirection: {fileID: 2472907931071839767}
@@ -291,6 +292,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   bulletPrefab: {fileID: 7134969591124079668, guid: b0646850b3866154e900d03016102b20, type: 3}
+--- !u!114 &3615678807736192110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7626686932833804791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 604bb00143c024947a717cd3f473a7fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!1 &8886931679394818147
 GameObject:
   m_ObjectHideFlags: 0

@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
 
     private Ray ray;
     private Vector3 offSetDirection;
-    private float offSetForce;
+    private float offSetForce = 1f;
     private Rigidbody rb;
     private Vector3 rotAxis;
     private float rotRadians;
@@ -93,6 +93,8 @@ public class PlayerController : MonoBehaviour
             offSetDirection = rayDir;
 
         }
+        else
+            offSetDirection = -Physics.gravity/offSetForce;
         Movement(lookDirection);
         UpdateUprightForce(upRight);
         rb.AddForce(offSetDirection * offSetForce);

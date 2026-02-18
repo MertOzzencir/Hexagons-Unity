@@ -13,7 +13,7 @@ public class ShootCube : MonoBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 bullet = Instantiate(bulletPrefab, Camera.main.transform.position, Quaternion.identity);
-                bullet.GetComponent<Rigidbody>().AddForce((hit.point-Camera.main.transform.position).normalized * 25f,ForceMode.Impulse);
+                bullet.GetComponent<Rigidbody>().AddForce((hit.point-Camera.main.transform.position).normalized * 50f,ForceMode.Impulse);
             }
         }
     }

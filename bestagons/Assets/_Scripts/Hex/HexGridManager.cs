@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using UnityEngine;
 
 public class HexGridManager : MonoBehaviour
 {
+    [Range(0, 30)]
     [SerializeField] private int hexCircleAmount;
 
     [Range(0, 100)]
@@ -14,21 +14,18 @@ public class HexGridManager : MonoBehaviour
     [SerializeField] private float outerSize;
     [SerializeField] private float height;
     [SerializeField] private Vector3 worldPos;
-    private Dictionary<GameObject, HexCoord> hexGrids = new Dictionary<GameObject, HexCoord>();
+    private Dictionary<HexCoord, HexTile> hexTiles = new Dictionary<HexCoord, HexTile>();
     private HexRenderer hexRenderer;
-    void Awake()
-    {
-        hexRenderer = FindAnyObjectByType<HexRenderer>();
-    }
     void Start()
     {
-        HexGeneration();
+        hexRenderer = FindAnyObjectByType<HexRenderer>();
     }
 
     private void HexGeneration()
     {
         if (hexRenderer == null)
             return;
+        Debug.Log("sa");
         hexRenderer.ClearMeshData();
         ClearDict();
         for (int q = -hexCircleAmount; q <= hexCircleAmount; q++)
@@ -37,44 +34,43 @@ public class HexGridManager : MonoBehaviour
             {
                 if (Mathf.Abs(q + r) <= hexCircleAmount)
                 {
-                    HexCoord currentHex = new HexCoord(q, r);
-                    GameObject name = new GameObject();
-                    hexGrids.Add(name, currentHex);
+                    HexCoord coord = new HexCoord(q, r);
+                    int random = UnityEngine.Random.Range(0, 2);
+                    HexTile tile = new HexTile(coord.GetWorldPosition(outerSize));
+                    hexTiles.Add(coord, tile);
+
                 }
             }
         }
+        ResourceHexTile normalTile = new ResourceHexTile(new HexCoord(0, 0).GetWorldPosition(outerSize), Hardness.Hard, Depth.Medium);
+        hexTiles[new HexCoord(0, 0)] = normalTile;
         int i = 0;
-        foreach (var a in hexGrids)
+        foreach (var a in hexTiles)
         {
-            hexRenderer.SetVerticesAndTriangles(a.Value.GetWorldPosition(outerSize), i, outerSize, innerSize, height);
+            hexRenderer.SetVerticesAndTriangles(a.Key.GetWorldPosition(outerSize), i, outerSize, innerSize, height);
             i++;
         }
         hexRenderer.GenerateMesh();
     }
     private void ClearDict()
     {
-        foreach (var a in hexGrids)
-        {
-            Destroy(a.Key);
-        }
-        hexGrids.Clear();
+        hexTiles.Clear();
     }
 
-
-    [ContextMenu("Test")]
-    public void TestWorldPosition()
+    public HexTile GetHexGridFromWorldPosition(Vector3 position)
     {
-        HexCoord result = HexCoord.FromWorldPositionToHex(worldPos);
-        Debug.Log($"HexCoard[{result.q},{result.r}]");
+        HexCoord currentHex = HexCoord.FromWorldPositionToHex(position, outerSize);
+        return hexTiles[currentHex];
     }
+
 
     void OnDrawGizmos()
     {
-        if (hexGrids == null) return;
+        if (hexTiles == null) return;
 
-        foreach (var a in hexGrids)
+        foreach (var a in hexTiles)
         {
-            Gizmos.DrawSphere(a.Value.GetWorldPosition(outerSize), 0.2f);
+            Gizmos.DrawSphere(a.Key.GetWorldPosition(outerSize), 0.2f);
         }
         Gizmos.DrawSphere(worldPos, 0.2f);
     }
@@ -82,7 +78,7 @@ public class HexGridManager : MonoBehaviour
     {
         if (outerSize < innerSize)
             outerSize = innerSize;
-       
+
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.delayCall += () =>
         {
@@ -92,6 +88,8 @@ public class HexGridManager : MonoBehaviour
 #endif
     }
 }
+
+
 [Serializable]
 public struct HexCoord
 {
@@ -122,10 +120,10 @@ public struct HexCoord
         return new HexCoord(q + directions[index].q, r + directions[index].r);
     }
 
-    public static HexCoord FromWorldPositionToHex(Vector3 worldPos)
+    public static HexCoord FromWorldPositionToHex(Vector3 worldPos, float size)
     {
-        float r = worldPos.z / 1.5f;
-        float q = (worldPos.x - Mathf.Sqrt(3) / 2f * r) / Mathf.Sqrt(3);
+        float r = worldPos.z / (1.5f * size);
+        float q = (worldPos.x - Mathf.Sqrt(3) / 2f * size * r) / (Mathf.Sqrt(3) * size);
         float s = -q - r;
 
         int roundQ = Mathf.RoundToInt(q);
@@ -142,6 +140,17 @@ public struct HexCoord
             roundR = -roundQ - roundS;
 
         return new HexCoord(roundQ, roundR);
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj is HexCoord other)
+            return q == other.q && r == other.r;
+        return false;
+    }
+    public override int GetHashCode()
+    {
+        return q * 397 ^ r;
     }
 
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Security;
+using Mono.Cecil;
 using NUnit.Framework.Internal;
 using UnityEngine;
 
@@ -20,96 +21,106 @@ public class HexRenderer : MonoBehaviour
 
     public void SetVerticesAndTriangles(Vector3 center, int hexCount, float outerSize, float innerRadius, float height)
     {
-        int currentHexIndex = 24 * hexCount;
+        int currentHexIndex = 31 * hexCount;
+        vertices.Add(new Vector3(center.x, center.y + height / 2, center.z));
         for (int edgeIndex = 0; edgeIndex < 6; edgeIndex++)
         {
-            FindPoints(innerRadius, outerSize, edgeIndex, height / 2, center);
+            FindPoints(innerRadius, outerSize, edgeIndex, height, center);
             FindPoints(innerRadius, outerSize, edgeIndex, center.y, center);
+            InnerFindPoints(innerRadius, outerSize, edgeIndex, height / 2, center);
         }
 
-        for (int faceCount = 0 + currentHexIndex; faceCount <= 20 + currentHexIndex; faceCount += 4)
+        for (int faceCount = 1 + currentHexIndex; faceCount <= 26 + currentHexIndex; faceCount += 5)
         {
-            if (faceCount == 20 + currentHexIndex)
+            if (faceCount == 26 + currentHexIndex)
             {
                 #region Üst Yüzey
                 triangles.Add(faceCount);
-                triangles.Add(1 + currentHexIndex);
+                triangles.Add(2 + currentHexIndex);
                 triangles.Add(faceCount + 1);
 
                 triangles.Add(faceCount);
-                triangles.Add(0 + currentHexIndex);
                 triangles.Add(1 + currentHexIndex);
+                triangles.Add(2 + currentHexIndex);
                 #endregion
 
                 #region Alt Yüzey
                 triangles.Add(faceCount + 2);
                 triangles.Add(faceCount + 3);
-                triangles.Add(3 + currentHexIndex);
+                triangles.Add(4 + currentHexIndex);
 
                 triangles.Add(faceCount + 2);
+                triangles.Add(4 + currentHexIndex);
                 triangles.Add(3 + currentHexIndex);
-                triangles.Add(2 + currentHexIndex);
                 #endregion
                 #region Diş kenar
                 triangles.Add(faceCount + 1);
-                triangles.Add(1 + currentHexIndex);
-                triangles.Add(3 + currentHexIndex);
+                triangles.Add(faceCount - 22);
+                triangles.Add(faceCount + 3);
 
                 triangles.Add(faceCount + 1);
-                triangles.Add(3 + currentHexIndex);
-                triangles.Add(faceCount + 3);
+                triangles.Add(faceCount - 24);
+                triangles.Add(faceCount - 22);
                 #endregion
                 #region İç kenar
                 triangles.Add(faceCount);
-                triangles.Add(2 + currentHexIndex);
-                triangles.Add(0 + currentHexIndex);
+                triangles.Add(3 + currentHexIndex);
+                triangles.Add(1 + currentHexIndex);
 
                 triangles.Add(faceCount);
                 triangles.Add(faceCount + 2);
-                triangles.Add(2 + currentHexIndex);
+                triangles.Add(3 + currentHexIndex);
                 #endregion
-
+                #region İç Üçgenler
+                triangles.Add(currentHexIndex);
+                triangles.Add(currentHexIndex + 5);
+                triangles.Add(faceCount + 4);
+                #endregion
                 break;
             }
             #region Üst Yüzey
             triangles.Add(faceCount);
-            triangles.Add(faceCount + 5);
+            triangles.Add(faceCount + 6);
             triangles.Add(faceCount + 1);
 
             triangles.Add(faceCount);
-            triangles.Add(faceCount + 4);
             triangles.Add(faceCount + 5);
+            triangles.Add(faceCount + 6);
 
             #endregion
             #region Alt Yüzey 
             triangles.Add(faceCount + 2);
             triangles.Add(faceCount + 3);
-            triangles.Add(faceCount + 7);
+            triangles.Add(faceCount + 8);
 
             triangles.Add(faceCount + 2);
+            triangles.Add(faceCount + 8);
             triangles.Add(faceCount + 7);
-            triangles.Add(faceCount + 6);
 
             #endregion
             #region Diş kenar
             triangles.Add(faceCount + 1);
-            triangles.Add(faceCount + 5);
-            triangles.Add(faceCount + 7);
+            triangles.Add(faceCount + 6);
+            triangles.Add(faceCount + 8);
 
             triangles.Add(faceCount + 1);
-            triangles.Add(faceCount + 7);
+            triangles.Add(faceCount + 8);
             triangles.Add(faceCount + 3);
             #endregion
             #region İç kenar
             triangles.Add(faceCount);
-            triangles.Add(faceCount + 6);
-            triangles.Add(faceCount + 4);
+            triangles.Add(faceCount + 7);
+            triangles.Add(faceCount + 5);
 
             triangles.Add(faceCount);
             triangles.Add(faceCount + 2);
-            triangles.Add(faceCount + 6);
+            triangles.Add(faceCount + 7);
             #endregion
-
+            #region İç Üçgenler
+            triangles.Add(currentHexIndex);
+            triangles.Add(faceCount + 9);
+            triangles.Add(faceCount + 4);
+            #endregion
         }
     }
 
@@ -117,6 +128,10 @@ public class HexRenderer : MonoBehaviour
     {
         vertices.Add(GetPoint(innerRadius, index, height, center));
         vertices.Add(GetPoint(outerRadius, index, height, center));
+    }
+    private void InnerFindPoints(float innerRadius, float outerRadius, int index, float height, Vector3 center)
+    {
+        vertices.Add(GetPoint(innerRadius, index, height, center));
     }
 
     private Vector3 GetPoint(float size, int index, float height, Vector3 center)
@@ -132,9 +147,22 @@ public class HexRenderer : MonoBehaviour
     }
     public void GenerateMesh()
     {
+
         mesh = new Mesh();
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
         mFilter.mesh = mesh;
+        MeshCollider collider = GetComponent<MeshCollider>();
+        if (collider == null)
+        {
+            MeshCollider sa = gameObject.AddComponent<MeshCollider>();
+            sa.sharedMesh = mesh;
+        }
+        else
+        {
+            collider.sharedMesh = null;
+            collider.sharedMesh = mesh;
+        }
+
     }
 }
