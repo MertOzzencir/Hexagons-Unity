@@ -12,6 +12,7 @@ public class HexRenderer : MonoBehaviour
     private MeshFilter mFilter;
     private List<Vector3> vertices = new List<Vector3>();
     private List<int> triangles = new List<int>();
+    private List<Color> vertexColors = new List<Color>();
     Mesh mesh;
     void Awake()
     {
@@ -19,14 +20,15 @@ public class HexRenderer : MonoBehaviour
         mFilter = GetComponent<MeshFilter>();
     }
 
-    public void SetVerticesAndTriangles(Vector3 center, int hexCount, float outerSize, float innerRadius, float height)
+    public void SetVerticesAndTriangles(Vector3 center, int hexCount, float outerSize, float innerRadius, float height, Color vertexColor)
     {
         int currentHexIndex = 31 * hexCount;
         vertices.Add(new Vector3(center.x, center.y + height / 2, center.z));
+        vertexColors.Add(vertexColor);
         for (int edgeIndex = 0; edgeIndex < 6; edgeIndex++)
         {
-            FindPoints(innerRadius, outerSize, edgeIndex, height, center);
-            FindPoints(innerRadius, outerSize, edgeIndex, center.y, center);
+            FindPoints(innerRadius, outerSize, edgeIndex, height, center, vertexColor);
+            FindPoints(innerRadius, outerSize, edgeIndex, center.y, center, vertexColor);
             InnerFindPoints(innerRadius, outerSize, edgeIndex, height / 2, center);
         }
 
@@ -124,14 +126,18 @@ public class HexRenderer : MonoBehaviour
         }
     }
 
-    private void FindPoints(float innerRadius, float outerRadius, int index, float height, Vector3 center)
+    private void FindPoints(float innerRadius, float outerRadius, int index, float height, Vector3 center, Color vertexColor)
     {
         vertices.Add(GetPoint(innerRadius, index, height, center));
         vertices.Add(GetPoint(outerRadius, index, height, center));
+        vertexColors.Add(vertexColor);
+        vertexColors.Add(vertexColor);
+
     }
     private void InnerFindPoints(float innerRadius, float outerRadius, int index, float height, Vector3 center)
     {
         vertices.Add(GetPoint(innerRadius, index, height, center));
+        vertexColors.Add(Color.white);
     }
 
     private Vector3 GetPoint(float size, int index, float height, Vector3 center)
@@ -144,6 +150,7 @@ public class HexRenderer : MonoBehaviour
     {
         triangles.Clear();
         vertices.Clear();
+        vertexColors.Clear();
     }
     public void GenerateMesh()
     {
@@ -151,6 +158,7 @@ public class HexRenderer : MonoBehaviour
         mesh = new Mesh();
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
+        mesh.colors = vertexColors.ToArray();
         mFilter.mesh = mesh;
         MeshCollider collider = GetComponent<MeshCollider>();
         if (collider == null)

@@ -9,7 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e85b1d8bf7714640939711291caa121, type: 3}
-  m_Name: Extractor
-  m_EditorClassIdentifier: Assembly-CSharp::ExtractorSO
-  Prefab: {fileID: 2233193201271973610, guid: eff036bcf6ab0884cb9644f5c3f577f2, type: 3}
+  m_Script: {fileID: 11500000, guid: 00e633c9e40fed6489c93202af2eeeb8, type: 3}
+  m_Name: GroundTile
+  m_EditorClassIdentifier: Assembly-CSharp::HexTileDataSO
+  tileName: Ground
+  tileColor: {r: 0.42857128, g: 0.24671207, b: 0.08259523, a: 0}

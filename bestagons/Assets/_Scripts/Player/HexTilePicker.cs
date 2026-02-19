@@ -6,9 +6,10 @@ public class HexTilePicker : MonoBehaviour
     [SerializeField] private LayerMask hexGridLayerMask;
     [SerializeField] private LayerMask playerOffSetLayerMask;
     [SerializeField] private GameObject tempIndicator;
-    [SerializeField] private ExtractorBlueprint extractor;
-    [SerializeField] private Drill drill;
-    [SerializeField] private Feeder feeder;
+    [SerializeField] private ExtractorBase extractor;
+    [SerializeField] private Drill drillPrefab;
+    [SerializeField] private Feeder feederPrefab;
+    [SerializeField] private Storage storagePrefab;
 
     private HexGridManager gridManager;
     private RaycastHit outerHit;
@@ -49,17 +50,22 @@ public class HexTilePicker : MonoBehaviour
             if (!rsTile.Occoupied)
             {
                 rsTile.Occoupied = true;
-                ExtractorBlueprint ex = Instantiate(extractor);
+                ExtractorBase ex = Instantiate(extractor);
                 rsTile.PlacedObject = ex;
                 ex.transform.position = rsTile.Center;
                 ex.SetResourceTile(rsTile);
             }
             else
             {
-                if (currenTile.PlacedObject is ExtractorBlueprint extractor)
+                if (currenTile.PlacedObject is ExtractorBase extractor)
                 {
+                    if (extractor.Initialized)
+                        return;
                     Debug.Log("sa?");
-                    extractor.SetTools(drill, feeder);
+                    Drill currentDrill = Instantiate(drillPrefab);
+                    Feeder currentFeeder = Instantiate(feederPrefab);
+                    Storage currentStorage = Instantiate(storagePrefab);
+                    extractor.SetTools(currentDrill, currentFeeder,currentStorage);
                 }
             }
         }

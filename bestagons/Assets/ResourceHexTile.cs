@@ -2,17 +2,15 @@ using UnityEngine;
 
 public class ResourceHexTile : HexTile
 {
-    public Hardness Hardness;
-    public Depth Depth;
-    public ResourceHexTile(Vector3 center, Hardness hardness, Depth depth) : base(center)
+    ResourceHexTileDataSO ResourceData => (ResourceHexTileDataSO)TileData;
+    public ResourceHexTile(Vector3 center, HexTileDataSO tileData) : base(center, tileData)
     {
-        Hardness = hardness;
-        Depth = depth;
+        TileData = tileData;
     }
 
-    public void Dig()
+    public void Dig(out Materials digMaterial)
     {
-        Debug.Log("Digging");
+        digMaterial = ResourceData.TileMaterial;
     }
 }
 public enum Hardness { Soft, Hard, Crystal }

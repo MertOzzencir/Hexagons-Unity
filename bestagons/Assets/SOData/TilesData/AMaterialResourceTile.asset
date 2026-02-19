@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd9012f2e4d66584992b6a5e8cef2172, type: 3}
+  m_Name: AMaterialResourceTile
+  m_EditorClassIdentifier: Assembly-CSharp::ResourceHexTileDataSO
+  tileName: A Material
+  tileColor: {r: 0.059588127, g: 0.51482475, b: 0.018733464, a: 0}
+  Hardness: 1
+  Depth: 1
+  TileMaterial: {fileID: 2298322032996198273, guid: f642f652f660a4c489b76997f3e0e472, type: 3}

@@ -14,6 +14,7 @@ public class HexGridManager : MonoBehaviour
     [SerializeField] private float outerSize;
     [SerializeField] private float height;
     [SerializeField] private Vector3 worldPos;
+    [SerializeField] private HexTileDataSO[] hexDatas;
     private Dictionary<HexCoord, HexTile> hexTiles = new Dictionary<HexCoord, HexTile>();
     private HexRenderer hexRenderer;
     void Start()
@@ -36,18 +37,20 @@ public class HexGridManager : MonoBehaviour
                 {
                     HexCoord coord = new HexCoord(q, r);
                     int random = UnityEngine.Random.Range(0, 2);
-                    HexTile tile = new HexTile(coord.GetWorldPosition(outerSize));
+                    HexTile tile = new HexTile(coord.GetWorldPosition(outerSize), hexDatas[0]);
                     hexTiles.Add(coord, tile);
 
                 }
             }
         }
-        ResourceHexTile normalTile = new ResourceHexTile(new HexCoord(0, 0).GetWorldPosition(outerSize), Hardness.Hard, Depth.Medium);
+        ResourceHexTile normalTile = new ResourceHexTile(new HexCoord(0, 0).GetWorldPosition(outerSize), hexDatas[1]);
+        ResourceHexTile normalTile2 = new ResourceHexTile(new HexCoord(1, 2).GetWorldPosition(outerSize), hexDatas[2]);
         hexTiles[new HexCoord(0, 0)] = normalTile;
+        hexTiles[new HexCoord(1, 2)] = normalTile2;
         int i = 0;
         foreach (var a in hexTiles)
         {
-            hexRenderer.SetVerticesAndTriangles(a.Key.GetWorldPosition(outerSize), i, outerSize, innerSize, height);
+            hexRenderer.SetVerticesAndTriangles(a.Key.GetWorldPosition(outerSize), i, outerSize, innerSize, height, a.Value.TileData.tileColor);
             i++;
         }
         hexRenderer.GenerateMesh();
