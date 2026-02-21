@@ -12,7 +12,6 @@ public class CameraController : MonoBehaviour
     }
     private void OrbitalFollow(bool obj)
     {
-        Debug.Log(obj);
         camInputController.enabled = obj;
     }
     void OnEnable()

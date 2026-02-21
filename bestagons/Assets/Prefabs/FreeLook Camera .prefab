@@ -100,7 +100,7 @@ MonoBehaviour:
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
   OrbitStyle: 0
-  Radius: 7
+  Radius: 12
   Orbits:
     Top:
       Radius: 2
@@ -124,9 +124,9 @@ MonoBehaviour:
       Time: 2
     Restrictions: 0
   VerticalAxis:
-    Value: 17.5
-    Center: 17.5
-    Range: {x: 5, y: 45}
+    Value: 35
+    Center: 45
+    Range: {x: 35, y: 75}
     Wrap: 0
     Recentering:
       Enabled: 0

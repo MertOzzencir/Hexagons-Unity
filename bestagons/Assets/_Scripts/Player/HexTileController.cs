@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class HexTilePicker : MonoBehaviour
+public class HexTileController : MonoBehaviour
 {
     [SerializeField] private LayerMask hexGridLayerMask;
     [SerializeField] private LayerMask playerOffSetLayerMask;
@@ -30,7 +30,7 @@ public class HexTilePicker : MonoBehaviour
             {
                 tempIndicator.SetActive(true);
                 currenTile = gridManager.GetHexGridFromWorldPosition(innerHit.point);
-                tempIndicator.transform.position = currenTile.Center;
+                //tempIndicator.transform.position = currenTile.Center;
             }
         }
         else
@@ -61,7 +61,7 @@ public class HexTilePicker : MonoBehaviour
                 {
                     if (extractor.Initialized)
                         return;
-                    Debug.Log("sa?");
+                    Debug.Log("Extractor Placed");
                     Drill currentDrill = Instantiate(drillPrefab);
                     Feeder currentFeeder = Instantiate(feederPrefab);
                     Storage currentStorage = Instantiate(storagePrefab);

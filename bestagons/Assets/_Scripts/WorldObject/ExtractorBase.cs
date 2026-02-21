@@ -1,5 +1,3 @@
-using System;
-using UnityEditor.Search;
 using UnityEngine;
 
 public class ExtractorBase : HexPlaceable
@@ -49,6 +47,21 @@ public class ExtractorBase : HexPlaceable
     {
         BaseStorage.transform.parent = StoragePlacement.transform;
         BaseStorage.transform.position = StoragePlacement.transform.position;
+        BaseStorage.OnStoragePicked += OnStoragePicked;
+        BaseStorage.OnStorageAvaliable += OnStorageAvaliable;
+    }
+
+    private void OnStorageAvaliable(bool obj)
+    {
+        BaseDrill.enabled = obj;
+    }
+
+    public void OnStoragePicked()
+    {
+        BaseStorage.OnStoragePicked -= OnStoragePicked;
+        BaseStorage.OnStorageAvaliable -= OnStorageAvaliable;
+        BaseDrill.enabled = false;
+        BaseStorage = null;
     }
 
     public Vector3 CurrentTile()

@@ -26,7 +26,7 @@ public class HexGridManager : MonoBehaviour
     {
         if (hexRenderer == null)
             return;
-        Debug.Log("sa");
+        Debug.Log("Hex Mesh Generation Started");
         hexRenderer.ClearMeshData();
         ClearDict();
         for (int q = -hexCircleAmount; q <= hexCircleAmount; q++)

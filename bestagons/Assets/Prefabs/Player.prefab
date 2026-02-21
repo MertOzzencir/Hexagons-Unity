@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6191976540800159782}
   - component: {fileID: 6058762724077648468}
   - component: {fileID: 7800597831661192424}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,7 +98,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2472907931071839767}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: downDir
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -132,9 +132,12 @@ GameObject:
   - component: {fileID: 705677581118945618}
   - component: {fileID: 4120871104869012141}
   - component: {fileID: 1398908429642958680}
-  - component: {fileID: 3248002209177907513}
+  - component: {fileID: 1135591947924287750}
+  - component: {fileID: 8038574567750014248}
   - component: {fileID: 3615678807736192110}
-  m_Layer: 0
+  - component: {fileID: 2923855696082157025}
+  - component: {fileID: 4850142192622133565}
+  m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -167,7 +170,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7626686932833804791}
   serializedVersion: 5
-  m_Mass: 5
+  m_Mass: 50
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -221,6 +224,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 090f6e07ffcee714b8b090b52833d5d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+--- !u!114 &1135591947924287750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7626686932833804791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fad3076743daa044ebe189113aedc89a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  downDirection: {fileID: 2472907931071839767}
+  rideHeight: 1.5
+  rideSpringStrength: 2000
+  rideSpringDamper: 350
+--- !u!114 &8038574567750014248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7626686932833804791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4925e814c6b9b864cac0c7ca9d177da9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HorizontalMovementController
   maxForce: 8
   acceleration: 30
   accelerationFactorFromDot:
@@ -273,25 +304,6 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   forceScale: {x: 1, y: 0, z: 1}
-  rideHeight: 1.6
-  rideSpringStrength: 200
-  rideSpringDamper: 30
-  downDirection: {fileID: 2472907931071839767}
-  uprightCorrectionStrength: 150
-  uprightCorrectionDamper: 25
---- !u!114 &3248002209177907513
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7626686932833804791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fb575132db84154799d05dd5cdea3cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  bulletPrefab: {fileID: 7134969591124079668, guid: b0646850b3866154e900d03016102b20, type: 3}
 --- !u!114 &3615678807736192110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -304,6 +316,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 604bb00143c024947a717cd3f473a7fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  hexGridLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  playerOffSetLayerMask:
+    serializedVersion: 2
+    m_Bits: 119
+  tempIndicator: {fileID: 0}
+  extractor: {fileID: 2233193201271973610, guid: eff036bcf6ab0884cb9644f5c3f577f2, type: 3}
+  drillPrefab: {fileID: 4307551122641194023, guid: 890a83fecc122d849be6e69b1d62046f, type: 3}
+  feederPrefab: {fileID: 7184533565447350121, guid: 61ad4b8f3ac469a4a91fa9b76f74842a, type: 3}
+  storagePrefab: {fileID: 4840707052342835895, guid: 403e4143178dec2459f0492c18b10832, type: 3}
+--- !u!114 &2923855696082157025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7626686932833804791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90382507b5ad85440a2cdc2784a0558c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  hexLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
+--- !u!114 &4850142192622133565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7626686932833804791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40f5fbb3915d3684c9d4047863608cd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RotationController
+  uprightCorrectionStrength: 1500
+  uprightCorrectionDamper: 250
 --- !u!1 &8886931679394818147
 GameObject:
   m_ObjectHideFlags: 0
@@ -315,7 +367,7 @@ GameObject:
   - component: {fileID: 7172546250644629005}
   - component: {fileID: 8249394248008400640}
   - component: {fileID: 4003669036636676340}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Visual (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
