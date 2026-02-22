@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(VerticalMovementController), typeof(HorizontalMovementController), typeof(RotationController))]
-public abstract class CarryableMovement : MonoBehaviour, ICarryable
+public class InteractionBase : MonoBehaviour, ICarryable
 {
     public VerticalMovementController VerticalController { get; set; }
     public RotationController RotationController { get; set; }
@@ -9,7 +9,7 @@ public abstract class CarryableMovement : MonoBehaviour, ICarryable
     public Vector3 direction { get; set; }
     public Rigidbody rb { get; set; }
 
-    protected virtual void Awake()
+    protected virtual void Start()
     {
         rb = GetComponent<Rigidbody>();
         VerticalController = GetComponent<VerticalMovementController>();
@@ -64,11 +64,6 @@ public abstract class CarryableMovement : MonoBehaviour, ICarryable
             VerticalController.ApplyLogic(rb);
         }
     }
-    public virtual void TryToPlaceOn()
-    {
-
-    }
-
     public virtual void OnPicked()
     {
         AutoKinematicManager.Instance.WakeUp(rb);

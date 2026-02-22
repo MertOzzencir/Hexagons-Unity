@@ -5,14 +5,19 @@ public class Drill : MonoBehaviour
 {
     [SerializeField] private float drillTimer = 2f;
 
-    private ExtractorBase currentBase;
+    public ExtractorBase CurrentBase;
     private ResourceHexTile currentTile;
     private float timer;
+    Rigidbody rb;
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
     public void InitilizeDrill(ResourceHexTile current, ExtractorBase currentBase)
     {
-        enabled = true;
         currentTile = current;
-        this.currentBase = currentBase;
+        rb.isKinematic = true;
+        this.CurrentBase = currentBase;
         transform.parent = currentBase.DrillPlacement.transform;
         transform.position = currentBase.DrillPlacement.transform.position;
     }
@@ -22,7 +27,7 @@ public class Drill : MonoBehaviour
         if (timer > drillTimer)
         {
             currentTile.Dig(out Materials currentDiggingMaterial);
-            currentBase.BaseFeeder.StoreMaterial(currentDiggingMaterial);
+            CurrentBase.BaseFeeder.StoreMaterial(currentDiggingMaterial);
             timer = 0f;
         }
     }

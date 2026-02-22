@@ -1,11 +1,11 @@
 using UnityEngine;
 
-public class MaterialsCarryMovement : CarryableMovement
+public class MaterialsCarryMovement : InteractionBase
 {
     Materials baseMaterial;
-    protected override void Awake()
+    protected override void Start()
     {
-        base.Awake();
+        base.Start();
         baseMaterial = GetComponent<Materials>();
     }
     public override void OnPicked()
@@ -19,8 +19,5 @@ public class MaterialsCarryMovement : CarryableMovement
     {
         base.Drop();
     }
-    public override void TryToPlaceOn()
-    {
-        base.TryToPlaceOn();
-    }
+
 }

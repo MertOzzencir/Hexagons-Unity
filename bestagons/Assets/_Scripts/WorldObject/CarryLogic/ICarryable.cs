@@ -7,6 +7,5 @@ public interface ICarryable
     public void Carry(Vector3 toPosition);
     public void Drop();
     public void LocomotionLogic();
-    public void TryToPlaceOn();
 
 }

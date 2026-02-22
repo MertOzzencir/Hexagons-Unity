@@ -4,21 +4,24 @@ using UnityEngine;
 public class Feeder : MonoBehaviour
 {
 
-    private ExtractorBase currentBase;
-
+    public ExtractorBase CurrentBase;
+    Rigidbody rb;
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
     public void InitilizeFeeder(ExtractorBase currentBase)
     {
-        enabled = true;
-        this.currentBase = currentBase;
+        rb.isKinematic = true;
+        this.CurrentBase = currentBase;
         transform.parent = currentBase.FeederPlacement.transform;
         transform.position = currentBase.FeederPlacement.transform.position;
     }
     public void StoreMaterial(Materials material)
     {
-        currentBase.BaseStorage.Add(material);
+        Materials sa = Instantiate(material);
+        CurrentBase.BaseStorage.Add(sa);
     }
-
-
 }
 public enum FeederType { Fast, Slow, Heavy }
 

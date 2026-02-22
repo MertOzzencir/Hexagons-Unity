@@ -1,13 +1,19 @@
+using System;
 using UnityEngine;
 
 public class StorageSlot : MonoBehaviour
 {
+    private Storage baseStorage;
     public Materials SlotMaterial { get; private set; }
 
-    public void AddOnSlot(Materials slot, Storage baseStorage)
+
+    void Awake()
     {
-        Materials m = Instantiate(slot);
-        SlotMaterial = m;
+        baseStorage = GetComponentInParent<Storage>();
+    }
+    public void AddOnSlot(Materials slot)
+    {
+        SlotMaterial = slot;
         SlotMaterial.transform.SetParent(transform);
         SlotMaterial.transform.localPosition = Vector3.zero;
         SlotMaterial.GetComponent<Rigidbody>().isKinematic = true;
@@ -17,6 +23,9 @@ public class StorageSlot : MonoBehaviour
     {
         return SlotMaterial;
     }
+
+
+
     public void RemoveOnSlot()
     {
         SlotMaterial.MaterialStorage = null;

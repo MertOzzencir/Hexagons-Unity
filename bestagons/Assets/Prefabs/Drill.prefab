@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2319602899449000958}
   - component: {fileID: 2746242387334976396}
   - component: {fileID: 4994905192655407834}
+  - component: {fileID: 7756820892998178448}
   m_Layer: 0
   m_Name: Drill
   m_TagString: Untagged
@@ -46,11 +47,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8003215244854933651}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 43babe560ef8c8d4a81f41c22fc3cb96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Drill
+  drillTimer: 2
+  CurrentBase: {fileID: 0}
 --- !u!54 &6690521080665182877
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -193,6 +196,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RotationController
   uprightCorrectionStrength: 150
   uprightCorrectionDamper: 25
+--- !u!114 &7756820892998178448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8003215244854933651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a9c355c32f604a4ea0efc5653e33038, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DrillInteractionController
 --- !u!1 &8221343459413652815
 GameObject:
   m_ObjectHideFlags: 0

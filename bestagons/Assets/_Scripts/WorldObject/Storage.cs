@@ -9,31 +9,62 @@ public class Storage : MonoBehaviour
     public event Action OnStoragePicked;
     [SerializeField] private Transform Slots;
     public bool IsFull { get; set; }
+
     public List<StorageSlot> StorageList { get; private set; } = new List<StorageSlot>();
     void Awake()
     {
         for (int i = 0; i < Slots.childCount; i++)
         {
             StorageSlot a = Slots.GetChild(i).GetComponent<StorageSlot>();
+            a.GetComponent<Placeable>().OnPlaced += RecieveObjectFromSlot;
             StorageList.Add(a);
         }
     }
-    public bool Add(Materials material)
+
+    private void RecieveObjectFromSlot(Placeable addedOnSlot, GameObject obj)
     {
-        StorageSlot currentSlot = IsAvaliable();
+        if (obj.TryGetComponent(out Materials material))
+        {
+            if (addedOnSlot.TryGetComponent(out StorageSlot slot))
+            {
+                if (slot.SlotMaterial == null)
+                {
+                    Add(material, slot);
+                }
+            }
+        }
+    }
+
+
+    public bool Add(Materials material, StorageSlot slotFromSide = null)
+    {
+
+        if (!CheckStorageCapacity(out StorageSlot currentSlot)) return false;
+        if (slotFromSide == null)
+            currentSlot.AddOnSlot(material);
+        else
+            slotFromSide.AddOnSlot(material);
+        CheckStorageCapacity(out StorageSlot no);
+        return true;
+    }
+
+    private bool CheckStorageCapacity(out StorageSlot slot)
+    {
+        slot = null;
+        StorageSlot currentSlot = GetAvaliableSlot();
         if (currentSlot == null)
         {
             OnStorageAvaliable?.Invoke(false);
             IsFull = true;
             return false;
         }
-
-        currentSlot.AddOnSlot(material, this);
-        StorageSlot avaliableSlot = IsAvaliable();
-        if (avaliableSlot == null)
-            OnStorageAvaliable?.Invoke(false);
-        return true;
+        else
+        {
+            slot = currentSlot;
+            return true;
+        }
     }
+
     public bool Remove(Materials material)
     {
         Debug.Log("Remove try");
@@ -49,7 +80,7 @@ public class Storage : MonoBehaviour
         }
         return false;
     }
-    public StorageSlot IsAvaliable()
+    public StorageSlot GetAvaliableSlot()
     {
         foreach (var a in StorageList)
         {

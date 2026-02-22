@@ -1,11 +1,11 @@
 using UnityEngine;
 
-public class StorageCarryMovement : CarryableMovement
+public class StorageInteractionController : InteractionBase
 {
     Storage baseStorage;
-    protected override void Awake()
+    protected override void Start()
     {
-        base.Awake();
+        base.Start();
         baseStorage = GetComponent<Storage>();
     }
     public override void OnPicked()
@@ -18,8 +18,5 @@ public class StorageCarryMovement : CarryableMovement
         base.Drop();
         baseStorage.CarryChild(true);
     }
-    public override void TryToPlaceOn()
-    {
-        base.TryToPlaceOn();
-    }
+   
 }

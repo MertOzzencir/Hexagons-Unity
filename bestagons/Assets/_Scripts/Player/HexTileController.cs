@@ -55,19 +55,6 @@ public class HexTileController : MonoBehaviour
                 ex.transform.position = rsTile.Center;
                 ex.SetResourceTile(rsTile);
             }
-            else
-            {
-                if (currenTile.PlacedObject is ExtractorBase extractor)
-                {
-                    if (extractor.Initialized)
-                        return;
-                    Debug.Log("Extractor Placed");
-                    Drill currentDrill = Instantiate(drillPrefab);
-                    Feeder currentFeeder = Instantiate(feederPrefab);
-                    Storage currentStorage = Instantiate(storagePrefab);
-                    extractor.SetTools(currentDrill, currentFeeder,currentStorage);
-                }
-            }
         }
     }
 
