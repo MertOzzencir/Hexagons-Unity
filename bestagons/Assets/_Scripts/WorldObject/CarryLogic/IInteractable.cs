@@ -1,7 +1,7 @@
 
 using UnityEngine;
 
-public interface ICarryable
+public interface IInteractable
 {
     public void OnPicked();
     public void Carry(Vector3 toPosition);

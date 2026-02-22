@@ -1,5 +1,3 @@
-using System;
-using UnityEditor.Animations;
 using UnityEngine;
 
 public class ExtractorBase : HexPlaceable
@@ -7,94 +5,88 @@ public class ExtractorBase : HexPlaceable
     public Transform DrillPlacement;
     public Transform FeederPlacement;
     public Transform StoragePlacement;
-    public Drill BaseDrill { get; set; }
-    public Feeder BaseFeeder { get; set; }
-    public Storage BaseStorage { get; set; }
-    private ResourceHexTile currentTile;
+
+    public Drill BaseDrill { get; private set; }
+    public Feeder BaseFeeder { get; private set; }
+    public Storage BaseStorage { get; private set; }
+    public ResourceHexTile CurrentTile { get; private set; }
 
     void Awake()
     {
         for (int i = 0; i < transform.childCount; i++)
         {
             if (transform.GetChild(i).TryGetComponent(out Placeable placeable))
-            {
-                placeable.OnPlaced += GetTools;
-            }
+                placeable.OnPlaced += OnToolPlaced;
         }
-    }
-
-    private void GetTools(Placeable placeable, GameObject obj)
-    {
-        Drill drill = obj.GetComponent<Drill>();
-        Feeder feeder = obj.GetComponent<Feeder>();
-        Storage storage = obj.GetComponent<Storage>();
-        SetTools(drill, feeder, storage);
     }
 
     public void SetResourceTile(ResourceHexTile next)
     {
-        currentTile = next;
+        CurrentTile = next;
     }
-    public void SetTools(Drill drill = null, Feeder feeder = null, Storage storage = null)
-    {
 
-        if (drill != null && BaseDrill == null)
+    private void OnToolPlaced(Placeable placeable, GameObject obj)
+    {
+        if (obj.TryGetComponent(out Drill drill) && BaseDrill == null)
         {
             BaseDrill = drill;
-            BaseDrill.enabled = false;
-            BaseDrill.InitilizeDrill(currentTile, this);
+            BaseDrill.InitilizeTools(this);
         }
-
-        if (feeder != null && BaseFeeder == null)
+        else if (obj.TryGetComponent(out Feeder feeder) && BaseFeeder == null)
         {
             BaseFeeder = feeder;
-            BaseFeeder.enabled = false;
-            BaseFeeder.InitilizeFeeder(this);
+            BaseFeeder.InitilizeTools(this);
         }
-
-        if (storage != null && BaseStorage == null)
+        else if (obj.TryGetComponent(out Storage storage) && BaseStorage == null)
         {
             BaseStorage = storage;
-            InitilizeStorage();
+            BaseStorage.InitilizeTools(this);
+            SubscribeStorage();
         }
 
-        if (BaseDrill != null && BaseFeeder != null && BaseStorage != null)
-            InitilizeTools();
+        TryStartWorking();
     }
 
-    private void InitilizeTools()
+    private void TryStartWorking()
     {
-        BaseDrill.enabled = true;
-        BaseFeeder.enabled = true;
+        if (BaseDrill != null && BaseFeeder != null && BaseStorage != null)
+        {
+            BaseDrill.enabled = true;
+            BaseFeeder.enabled = true;
+            BaseStorage.enabled = true;
+        }
     }
-    public void InitilizeStorage()
+
+    private void SubscribeStorage()
     {
-        BaseStorage.GetComponent<Rigidbody>().isKinematic = true;
-        BaseStorage.transform.parent = StoragePlacement.transform;
-        BaseStorage.transform.position = StoragePlacement.transform.position;
-        BaseStorage.OnStoragePicked += OnStoragePicked;
         BaseStorage.OnStorageAvaliable += OnStorageAvaliable;
     }
 
-    private void OnStorageAvaliable(bool obj)
+    private void OnStorageAvaliable(bool available)
     {
-        BaseDrill.enabled = obj;
+        if (BaseDrill != null)
+            BaseDrill.enabled = available;
     }
 
     public void OnStoragePicked()
     {
-        BaseStorage.OnStoragePicked -= OnStoragePicked;
         BaseStorage.OnStorageAvaliable -= OnStorageAvaliable;
-        BaseDrill.enabled = false;
         BaseStorage = null;
+
+        StopWorking();
     }
 
-    public Vector3 CurrentTile()
+    public void RemoveTool(ITools tool)
     {
-        return currentTile.Center;
+        if (tool is Drill) BaseDrill = null;
+        else if (tool is Feeder) BaseFeeder = null;
+        StopWorking();
     }
-
+    private void StopWorking()
+    {
+        if (BaseDrill != null)
+            BaseDrill.enabled = false;
+        if (BaseFeeder != null)
+            BaseFeeder.enabled = false;
+    }
 }
-
-
-

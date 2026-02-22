@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 
-public class Storage : MonoBehaviour
+public class Storage : MonoBehaviour, ITools
 {
     public event Action<bool> OnStorageAvaliable;
-    public event Action OnStoragePicked;
     [SerializeField] private Transform Slots;
     public bool IsFull { get; set; }
-
+    private Rigidbody rb;
+    private ExtractorBase CurrentBase;
     public List<StorageSlot> StorageList { get; private set; } = new List<StorageSlot>();
     void Awake()
     {
+        rb = GetComponent<Rigidbody>();
         for (int i = 0; i < Slots.childCount; i++)
         {
             StorageSlot a = Slots.GetChild(i).GetComponent<StorageSlot>();
@@ -72,6 +73,7 @@ public class Storage : MonoBehaviour
         {
             if (a.SlotMaterial == material)
             {
+                IsFull = false;
                 Debug.Log("Removed?");
                 a.RemoveOnSlot();
                 OnStorageAvaliable?.Invoke(true);
@@ -91,7 +93,7 @@ public class Storage : MonoBehaviour
         }
         return null;
     }
-    public void CarryChild(bool carryState)
+    public void ChildrenCollision(bool carryState)
     {
         foreach (var a in StorageList)
         {
@@ -105,14 +107,23 @@ public class Storage : MonoBehaviour
             }
         }
     }
-    public void OnPicked(bool state)
+
+    public void InitilizeTools(ExtractorBase extractorBase)
     {
-        OnStoragePicked?.Invoke();
-        transform.parent = null;
-        CarryChild(state);
+        CurrentBase = extractorBase;
+        rb.isKinematic = true;
+        transform.parent = CurrentBase.StoragePlacement.transform;
+        transform.position = CurrentBase.StoragePlacement.transform.position;
     }
 
+    public void Detach()
+    {
+        ChildrenCollision(false);
+        transform.SetParent(null);
 
-
-
+        if (CurrentBase == null) return;
+        CurrentBase.RemoveTool(this);
+        CurrentBase.OnStoragePicked();
+        CurrentBase = null;
+    }
 }

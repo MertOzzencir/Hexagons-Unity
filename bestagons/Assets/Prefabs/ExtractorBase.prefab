@@ -206,7 +206,6 @@ MonoBehaviour:
   DrillPlacement: {fileID: 2253146710312440784}
   FeederPlacement: {fileID: 4993559008456800732}
   StoragePlacement: {fileID: 2537570915284470283}
-  Initialized: 0
 --- !u!1 &2096027095124010594
 GameObject:
   m_ObjectHideFlags: 0

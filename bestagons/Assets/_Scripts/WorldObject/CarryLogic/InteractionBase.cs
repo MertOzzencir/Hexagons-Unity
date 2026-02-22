@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(VerticalMovementController), typeof(HorizontalMovementController), typeof(RotationController))]
-public class InteractionBase : MonoBehaviour, ICarryable
+public class InteractionBase : MonoBehaviour, IInteractable
 {
     public VerticalMovementController VerticalController { get; set; }
     public RotationController RotationController { get; set; }

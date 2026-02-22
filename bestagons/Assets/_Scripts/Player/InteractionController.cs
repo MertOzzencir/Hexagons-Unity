@@ -4,7 +4,7 @@ using UnityEngine;
 public class InteractionController : MonoBehaviour
 {
     [SerializeField] private LayerMask hexLayerMask;
-    private ICarryable currentObject;
+    private IInteractable currentObject;
     void OnEnable()
     {
         InputManager.OnLeftClick += CarryObject;
@@ -51,7 +51,7 @@ public class InteractionController : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            if (hit.transform.TryGetComponent(out ICarryable carryable))
+            if (hit.transform.TryGetComponent(out IInteractable carryable))
             {
                 currentObject = carryable;
                 currentObject.OnPicked();

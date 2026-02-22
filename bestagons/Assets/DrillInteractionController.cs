@@ -12,13 +12,12 @@ public class DrillInteractionController : InteractionBase
         base.OnPicked();
         if (baseDrill.CurrentBase != null)
         {
-            baseDrill.CurrentBase.BaseDrill = null;
-            baseDrill.enabled = false;
+            baseDrill.Detach();
         }
     }
     public override void Drop()
     {
         base.Drop();
     }
-   
+
 }

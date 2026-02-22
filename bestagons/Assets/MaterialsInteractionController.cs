@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MaterialsCarryMovement : InteractionBase
+public class MaterialsInteractionController : InteractionBase
 {
     Materials baseMaterial;
     protected override void Start()

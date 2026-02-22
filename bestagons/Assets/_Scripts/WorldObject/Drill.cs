@@ -1,11 +1,11 @@
 using System.Collections;
 using UnityEngine;
 
-public class Drill : MonoBehaviour
+public class Drill : MonoBehaviour, ITools
 {
     [SerializeField] private float drillTimer = 2f;
 
-    public ExtractorBase CurrentBase;
+    public ExtractorBase CurrentBase{get;set;}
     private ResourceHexTile currentTile;
     private float timer;
     Rigidbody rb;
@@ -13,16 +13,14 @@ public class Drill : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
     }
-    public void InitilizeDrill(ResourceHexTile current, ExtractorBase currentBase)
-    {
-        currentTile = current;
-        rb.isKinematic = true;
-        this.CurrentBase = currentBase;
-        transform.parent = currentBase.DrillPlacement.transform;
-        transform.position = currentBase.DrillPlacement.transform.position;
-    }
+
     public void Update()
     {
+        if (CurrentBase.BaseStorage != null)
+        {
+            if (CurrentBase.BaseStorage.IsFull)
+                return;
+        }
         timer += Time.deltaTime;
         if (timer > drillTimer)
         {
@@ -32,9 +30,27 @@ public class Drill : MonoBehaviour
         }
     }
 
+    public void InitilizeTools(ExtractorBase extractorBase)
+    {
+        this.CurrentBase = extractorBase;
+        currentTile = CurrentBase.CurrentTile;
+        rb.isKinematic = true;
+        transform.parent = CurrentBase.DrillPlacement.transform;
+        transform.position = CurrentBase.DrillPlacement.transform.position;
+    }
+
+    public void Detach()
+    {
+        enabled = false;
+        transform.SetParent(null);
+        if (CurrentBase == null) return;
+        CurrentBase.RemoveTool(this);
+        CurrentBase = null;
+    }
     void OnDisable()
     {
         timer = 0;
     }
+
 }
 public enum DrillType { Normal, Crusher, Heated }

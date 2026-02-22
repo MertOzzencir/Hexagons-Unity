@@ -12,8 +12,7 @@ public class FeederInteractionController : InteractionBase
         base.OnPicked();
         if (baseFeeder.CurrentBase != null)
         {
-            baseFeeder.CurrentBase.BaseFeeder = null;
-            baseFeeder.enabled = false;
+            baseFeeder.Detach();
         }
     }
     public override void Drop()

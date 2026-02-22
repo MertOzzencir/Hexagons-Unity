@@ -221,10 +221,10 @@ GameObject:
   - component: {fileID: 7184533565447350121}
   - component: {fileID: 7521220957302148805}
   - component: {fileID: 1104893133234860585}
+  - component: {fileID: 4858123163797707407}
   - component: {fileID: 2176735807494055628}
   - component: {fileID: 1711552895157749551}
   - component: {fileID: 4407552347974497004}
-  - component: {fileID: 4858123163797707407}
   m_Layer: 0
   m_Name: Feeder
   m_TagString: Untagged
@@ -262,7 +262,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd6b01a7bf51fc64398282682dea3efb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Feeder
-  CurrentBase: {fileID: 0}
 --- !u!54 &7521220957302148805
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -311,6 +310,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4858123163797707407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9026417095750556395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 408b4a42fd2e532479a12504d0839255, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FeederInteractionController
 --- !u!114 &2176735807494055628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -405,15 +416,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RotationController
   uprightCorrectionStrength: 150
   uprightCorrectionDamper: 25
---- !u!114 &4858123163797707407
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9026417095750556395}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 408b4a42fd2e532479a12504d0839255, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FeederInteractionController

@@ -11,12 +11,12 @@ public class StorageInteractionController : InteractionBase
     public override void OnPicked()
     {
         base.OnPicked();
-        baseStorage.OnPicked(false);
+        baseStorage.Detach();
     }
     public override void Drop()
     {
         base.Drop();
-        baseStorage.CarryChild(true);
+        baseStorage.ChildrenCollision(true);
     }
-   
+
 }
