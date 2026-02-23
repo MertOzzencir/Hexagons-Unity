@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class ResourceHexTile : HexTile
 {
-    ResourceHexTileDataSO ResourceData => (ResourceHexTileDataSO)TileData;
+    public ResourceHexTileDataSO ResourceData => (ResourceHexTileDataSO)TileData;
     public ResourceHexTile(Vector3 center, HexTileDataSO tileData) : base(center, tileData)
     {
         TileData = tileData;

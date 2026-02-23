@@ -126,8 +126,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VerticalMovementController
   downDirection: {fileID: 1601724886737011918, guid: 61ad4b8f3ac469a4a91fa9b76f74842a, type: 3}
   rideHeight: 3
-  rideSpringStrength: 150
-  rideSpringDamper: 150
+  rideSpringStrength: 700
+  rideSpringDamper: 100
 --- !u!114 &4208613363086572524
 MonoBehaviour:
   m_ObjectHideFlags: 0

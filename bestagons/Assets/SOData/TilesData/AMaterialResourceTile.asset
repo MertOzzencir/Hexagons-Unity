@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ResourceHexTileDataSO
   tileName: A Material
   tileColor: {r: 0.059588127, g: 0.51482475, b: 0.018733464, a: 0}
-  Hardness: 1
-  Depth: 1
+  Hardness: 0
+  Depth: 2
   TileMaterial: {fileID: 2298322032996198273, guid: f642f652f660a4c489b76997f3e0e472, type: 3}

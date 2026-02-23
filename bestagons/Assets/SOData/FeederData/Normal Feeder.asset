@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8baefb3940b3e5043ab376c02500aa06, type: 3}
+  m_Name: Normal Feeder
+  m_EditorClassIdentifier: Assembly-CSharp::FeederDataSO
+  BaseTimer: 1
+  DepthMultiplierList:
+  - Depth: 0
+    Multiplier: 1
+  - Depth: 1
+    Multiplier: 2
+  - Depth: 2
+    Multiplier: 3

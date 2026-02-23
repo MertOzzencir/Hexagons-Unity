@@ -64,8 +64,11 @@ public class ExtractorBase : HexPlaceable
 
     private void OnStorageAvaliable(bool available)
     {
-        if (BaseDrill != null)
+        if (BaseDrill != null && BaseFeeder != null)
+        {
             BaseDrill.enabled = available;
+            BaseFeeder.enabled = available;
+        }
     }
 
     public void OnStoragePicked()

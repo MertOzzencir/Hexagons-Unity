@@ -262,6 +262,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd6b01a7bf51fc64398282682dea3efb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Feeder
+  feederData: {fileID: 11400000, guid: dda1e80e3c388af49bd206a92acd4d24, type: 2}
 --- !u!54 &7521220957302148805
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -400,8 +401,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VerticalMovementController
   downDirection: {fileID: 1601724886737011918}
   rideHeight: 3
-  rideSpringStrength: 150
-  rideSpringDamper: 150
+  rideSpringStrength: 700
+  rideSpringDamper: 100
 --- !u!114 &4407552347974497004
 MonoBehaviour:
   m_ObjectHideFlags: 0

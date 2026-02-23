@@ -65,6 +65,19 @@ public class Storage : MonoBehaviour, ITools
             return true;
         }
     }
+    public int GetEmptySlot()
+    {
+        int i = 0;
+        foreach (var a in StorageList)
+        {
+            if (a.SlotMaterial == null)
+            {
+                i++;
+            }
+        }
+        return i;
+    }
+ 
 
     public bool Remove(Materials material)
     {

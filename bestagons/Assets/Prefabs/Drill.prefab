@@ -52,7 +52,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43babe560ef8c8d4a81f41c22fc3cb96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Drill
-  drillTimer: 2
+  drillData: {fileID: 11400000, guid: abfefd2ccc1f44b4a9cb0bf8cc492579, type: 2}
 --- !u!54 &6690521080665182877
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -191,8 +191,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VerticalMovementController
   downDirection: {fileID: 1613499741164154758}
   rideHeight: 3
-  rideSpringStrength: 200
-  rideSpringDamper: 150
+  rideSpringStrength: 700
+  rideSpringDamper: 100
 --- !u!114 &4994905192655407834
 MonoBehaviour:
   m_ObjectHideFlags: 0
