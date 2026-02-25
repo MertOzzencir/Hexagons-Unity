@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class HexGridManager : MonoBehaviour
 {
+    public static HexGridManager Instance;
     [Range(0, 30)]
     [SerializeField] private int hexCircleAmount;
 
@@ -17,6 +18,11 @@ public class HexGridManager : MonoBehaviour
     [SerializeField] private HexTileDataSO[] hexDatas;
     private Dictionary<HexCoord, HexTile> hexTiles = new Dictionary<HexCoord, HexTile>();
     private HexRenderer hexRenderer;
+    void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+    }
     void Start()
     {
         hexRenderer = FindAnyObjectByType<HexRenderer>();
@@ -43,10 +49,19 @@ public class HexGridManager : MonoBehaviour
                 }
             }
         }
-        ResourceHexTile normalTile = new ResourceHexTile(new HexCoord(0, 0).GetWorldPosition(outerSize), hexDatas[1]);
-        ResourceHexTile normalTile2 = new ResourceHexTile(new HexCoord(1, 2).GetWorldPosition(outerSize), hexDatas[2]);
-        hexTiles[new HexCoord(0, 0)] = normalTile;
-        hexTiles[new HexCoord(1, 2)] = normalTile2;
+        ResourceHexTile normalTile = new ResourceHexTile(new HexCoord(0, 1).GetWorldPosition(outerSize), hexDatas[1]);
+        ResourceHexTile normalTile2 = new ResourceHexTile(new HexCoord(1, 0).GetWorldPosition(outerSize), hexDatas[2]);
+        ResourceHexTile normalTile3 = new ResourceHexTile(new HexCoord(1, -1).GetWorldPosition(outerSize), hexDatas[1]);
+        ResourceHexTile normalTile4 = new ResourceHexTile(new HexCoord(0, -1).GetWorldPosition(outerSize), hexDatas[2]);
+
+        ResourceHexTile normalTile5 = new ResourceHexTile(new HexCoord(-1, 0).GetWorldPosition(outerSize), hexDatas[1]);
+        ResourceHexTile normalTile6 = new ResourceHexTile(new HexCoord(-1, 1).GetWorldPosition(outerSize), hexDatas[2]);
+        hexTiles[new HexCoord(0, 1)] = normalTile;
+        hexTiles[new HexCoord(1, 0)] = normalTile2;
+        hexTiles[new HexCoord(1, -1)] = normalTile3;
+        hexTiles[new HexCoord(0, -1)] = normalTile4;
+        hexTiles[new HexCoord(-1, 0)] = normalTile5;
+        hexTiles[new HexCoord(-1, 1)] = normalTile6;
         int i = 0;
         foreach (var a in hexTiles)
         {
@@ -63,7 +78,27 @@ public class HexGridManager : MonoBehaviour
     public HexTile GetHexGridFromWorldPosition(Vector3 position)
     {
         HexCoord currentHex = HexCoord.FromWorldPositionToHex(position, outerSize);
-        return hexTiles[currentHex];
+        if (hexTiles.TryGetValue(currentHex, out HexTile tile))
+        {
+            return tile;
+        }
+        else
+            return null;
+    }
+    public void FindNeighborhoodsToCommunicate(Vector3 pickedHex)
+    {
+        HexCoord centerHex = HexCoord.FromWorldPositionToHex(pickedHex, outerSize);
+        for (int i = 0; i < 6; i++)
+        {
+            HexCoord neighbor = centerHex.GetNeighbor(i);
+            if (hexTiles.TryGetValue(neighbor, out HexTile tile))
+            {
+                if (tile.PlacedObject != null)
+                {
+                    tile.PlacedObject.OnAroundTilesChanged();
+                }
+            }
+        }
     }
 
 

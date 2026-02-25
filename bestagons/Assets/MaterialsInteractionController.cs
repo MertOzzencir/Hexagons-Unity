@@ -3,6 +3,7 @@ using UnityEngine;
 public class MaterialsInteractionController : InteractionBase
 {
     Materials baseMaterial;
+
     protected override void Start()
     {
         base.Start();
@@ -11,6 +12,7 @@ public class MaterialsInteractionController : InteractionBase
     public override void OnPicked()
     {
         base.OnPicked();
+        baseMaterial.GetComponent<Collider>().isTrigger = false;
         Debug.Log("Material Picked?");
         if (baseMaterial.MaterialStorage != null)
             baseMaterial.MaterialStorage.Remove(baseMaterial);

@@ -8,7 +8,6 @@ public class Drill : MonoBehaviour, ITools
     [SerializeField] private DrillDataSO drillData;
 
     public ExtractorBase CurrentBase { get; set; }
-    private ResourceHexTile currentTile;
     private float timer;
     private float currentTimer;
     Rigidbody rb;
@@ -32,7 +31,7 @@ public class Drill : MonoBehaviour, ITools
         timer += Time.deltaTime;
         if (timer > currentTimer)
         {
-            currentTile.Dig(out Materials currentDiggingMaterial);
+            CurrentBase.CurrentTile.Dig(out Materials currentDiggingMaterial);
             CurrentBase.BaseFeeder.StoreMaterial(currentDiggingMaterial);
             timer = 0f;
         }
@@ -40,26 +39,39 @@ public class Drill : MonoBehaviour, ITools
 
     public void InitilizeTools(ExtractorBase extractorBase)
     {
-        this.CurrentBase = extractorBase;
-        currentTile = CurrentBase.CurrentTile;
-        currentTimer = CalculateBaseTimer(currentTile.ResourceData.Hardness);
+        rb = GetComponent<Rigidbody>();
         rb.isKinematic = true;
+        Destroy(rb);
+
+        GetComponent<Collider>().isTrigger = true;
+
+        this.CurrentBase = extractorBase;
         transform.parent = CurrentBase.DrillPlacement.transform;
         transform.position = CurrentBase.DrillPlacement.transform.position;
     }
-    public float CalculateBaseTimer(Hardness tileHardness)
+    public void CalculateBaseTimer(Hardness tileHardness)
     {
         foreach (var a in drillData.DrillMultiplierList)
         {
             if (a.TileHardness == tileHardness)
             {
-                return drillData.BaseTimer * a.Multiplier;
+                currentTimer = drillData.BaseTimer * a.Multiplier;
             }
         }
-        return drillData.BaseTimer;
+        currentTimer = drillData.BaseTimer;
+    }
+    public void StartTool()
+    {
+        enabled = true;
+        CalculateBaseTimer(CurrentBase.CurrentTile.ResourceData.Hardness);
+    }
+    public void CloseTool()
+    {
+        enabled = false;
     }
     public void Detach()
     {
+        GetComponent<Collider>().isTrigger = false;
         enabled = false;
         transform.SetParent(null);
         if (CurrentBase == null) return;

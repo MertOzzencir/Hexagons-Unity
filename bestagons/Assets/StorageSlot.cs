@@ -14,17 +14,21 @@ public class StorageSlot : MonoBehaviour
     public void AddOnSlot(Materials slot)
     {
         SlotMaterial = slot;
+        SlotMaterial.GetComponent<Collider>().isTrigger = true;
         SlotMaterial.transform.SetParent(transform);
         SlotMaterial.transform.localPosition = Vector3.zero;
-        SlotMaterial.GetComponent<Rigidbody>().isKinematic = true;
+        Rigidbody rb = SlotMaterial.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.isKinematic = true;
+            Destroy(rb);
+        }
         SlotMaterial.MaterialStorage = baseStorage;
     }
     public Materials GetMaterial()
     {
         return SlotMaterial;
     }
-
-
 
     public void RemoveOnSlot()
     {

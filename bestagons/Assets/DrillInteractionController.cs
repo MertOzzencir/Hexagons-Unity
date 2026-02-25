@@ -9,11 +9,11 @@ public class DrillInteractionController : InteractionBase
     }
     public override void OnPicked()
     {
-        base.OnPicked();
         if (baseDrill.CurrentBase != null)
         {
             baseDrill.Detach();
         }
+        base.OnPicked();
     }
     public override void Drop()
     {

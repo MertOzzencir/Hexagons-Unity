@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 
+[Serializable]
 public class ResourceHexTile : HexTile
 {
     public ResourceHexTileDataSO ResourceData => (ResourceHexTileDataSO)TileData;

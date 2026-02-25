@@ -15,7 +15,6 @@ public class InteractionBase : MonoBehaviour, IInteractable
         VerticalController = GetComponent<VerticalMovementController>();
         RotationController = GetComponent<RotationController>();
         HorizontalController = GetComponent<HorizontalMovementController>();
-        AutoKinematicManager.Instance.Register(rb);
     }
 
     public void Carry(Vector3 toPosition)
@@ -38,8 +37,23 @@ public class InteractionBase : MonoBehaviour, IInteractable
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         ActivateMovement(false);
+        TryToPlace();
     }
+    private void TryToPlace()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit[] hits = Physics.RaycastAll(ray, Mathf.Infinity, ~0, QueryTriggerInteraction.Collide);
+        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+        foreach (var a in hits)
+        {
+            if (a.collider.TryGetComponent(out Placeable pickedPlaceable))
+            {
+                pickedPlaceable.OnPlace(gameObject);
+                break;
+            }
 
+        }
+    }
     private void ActivateMovement(bool canCarry)
     {
         VerticalController.enabled = canCarry;
@@ -66,6 +80,16 @@ public class InteractionBase : MonoBehaviour, IInteractable
     }
     public virtual void OnPicked()
     {
-        AutoKinematicManager.Instance.WakeUp(rb);
+        if (rb == null)
+        {
+            Debug.Log("Is Null");
+            rb = gameObject.AddComponent<Rigidbody>();
+            rb.interpolation = RigidbodyInterpolation.Interpolate;
+            rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+            rb.freezeRotation = true;
+            rb.mass = 5f;
+        }
+
+        rb.isKinematic = false;
     }
 }

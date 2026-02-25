@@ -9,11 +9,11 @@ public class FeederInteractionController : InteractionBase
     }
     public override void OnPicked()
     {
-        base.OnPicked();
         if (baseFeeder.CurrentBase != null)
         {
             baseFeeder.Detach();
         }
+        base.OnPicked();
     }
     public override void Drop()
     {

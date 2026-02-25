@@ -65,7 +65,7 @@ public class Storage : MonoBehaviour, ITools
             return true;
         }
     }
-    public int GetEmptySlot()
+    public int TotalEmptySlot()
     {
         int i = 0;
         foreach (var a in StorageList)
@@ -77,7 +77,7 @@ public class Storage : MonoBehaviour, ITools
         }
         return i;
     }
- 
+
 
     public bool Remove(Materials material)
     {
@@ -106,7 +106,17 @@ public class Storage : MonoBehaviour, ITools
         }
         return null;
     }
-    public void ChildrenCollision(bool carryState)
+    public Materials GetFirstAvaliableMaterial()
+    {
+        foreach (var a in StorageList)
+        {
+            Materials avaliableMaterial = a.GetMaterial();
+            if (avaliableMaterial != null)
+                return avaliableMaterial;
+        }
+        return null;
+    }
+    public void ChildrenTriggerCheck(bool carryState)
     {
         foreach (var a in StorageList)
         {
@@ -116,22 +126,27 @@ public class Storage : MonoBehaviour, ITools
             Collider c = a.SlotMaterial.GetComponent<Collider>();
             if (c != null)
             {
-                c.enabled = carryState;
+                c.isTrigger = carryState;
             }
         }
     }
 
     public void InitilizeTools(ExtractorBase extractorBase)
     {
-        CurrentBase = extractorBase;
+        rb = GetComponent<Rigidbody>();
         rb.isKinematic = true;
+        Destroy(rb);
+
+        GetComponent<Collider>().isTrigger = true;
+        CurrentBase = extractorBase;
         transform.parent = CurrentBase.StoragePlacement.transform;
         transform.position = CurrentBase.StoragePlacement.transform.position;
     }
 
     public void Detach()
     {
-        ChildrenCollision(false);
+        GetComponent<Collider>().isTrigger = false;
+        ChildrenTriggerCheck(true);
         transform.SetParent(null);
 
         if (CurrentBase == null) return;

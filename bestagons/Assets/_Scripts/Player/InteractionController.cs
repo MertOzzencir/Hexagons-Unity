@@ -8,7 +8,6 @@ public class InteractionController : MonoBehaviour
     void OnEnable()
     {
         InputManager.OnLeftClick += CarryObject;
-        InputManager.OnRightClick += PlaceObject;
     }
 
 
@@ -47,41 +46,18 @@ public class InteractionController : MonoBehaviour
             currentObject = null;
             return;
         }
-
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            if (hit.transform.TryGetComponent(out IInteractable carryable))
-            {
-                currentObject = carryable;
-                currentObject.OnPicked();
-            }
-        }
-    }
-    private void PlaceObject(bool obj)
-    {
-        if (!obj || currentObject == null) return;
-        Debug.Log("Found Placeable Object");
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit[] hits = Physics.RaycastAll(ray, Mathf.Infinity, ~0, QueryTriggerInteraction.Collide);
         System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
         foreach (var a in hits)
         {
-            if (a.collider.TryGetComponent(out Placeable pickedPlaceable))
+            if (a.collider.TryGetComponent(out IInteractable carryable))
             {
-                MonoBehaviour carryObject = (MonoBehaviour)currentObject;
-                Debug.Log(carryObject.name + "" + a.transform.name);
-                //if (a.transform.gameObject != carryObject.gameObject)
-                //{
-                Debug.Log("Trying to Place the Object");
-                currentObject.Drop();
-                pickedPlaceable.OnPlace(carryObject.gameObject);
-                currentObject = null;
+                currentObject = carryable;
+                currentObject.OnPicked();
                 break;
-                //}
             }
-            else
-                Debug.Log("Pass");
         }
+
     }
 }

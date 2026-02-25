@@ -1,26 +1,22 @@
-using System;
 using UnityEngine;
 
 public class HexTileController : MonoBehaviour
 {
+    public static HexTileController Instance;
     [SerializeField] private LayerMask hexGridLayerMask;
     [SerializeField] private LayerMask playerOffSetLayerMask;
     [SerializeField] private GameObject tempIndicator;
-    [SerializeField] private ExtractorBase extractor;
-    [SerializeField] private Drill drillPrefab;
-    [SerializeField] private Feeder feederPrefab;
-    [SerializeField] private Storage storagePrefab;
 
-    private HexGridManager gridManager;
     private RaycastHit outerHit;
     private RaycastHit innerHit;
 
-    HexTile currenTile;
-    void Start()
+    public HexTile TileInCursor;
+    void Awake()
     {
-        gridManager = FindAnyObjectByType<HexGridManager>();
-        InputManager.OnLeftClick += PlacementTest;
+        if (Instance == null)
+            Instance = this;
     }
+
     void Update()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -29,34 +25,17 @@ public class HexTileController : MonoBehaviour
             if (Physics.Raycast(outerHit.point, Vector3.down, out innerHit, Mathf.Infinity, hexGridLayerMask))
             {
                 tempIndicator.SetActive(true);
-                currenTile = gridManager.GetHexGridFromWorldPosition(innerHit.point);
+                TileInCursor = HexGridManager.Instance.GetHexGridFromWorldPosition(innerHit.point);
                 //tempIndicator.transform.position = currenTile.Center;
             }
         }
         else
         {
-            currenTile = null;
+            TileInCursor = null;
             tempIndicator.SetActive(false);
         }
     }
-    private void PlacementTest(bool obj)
-    {
-        if (currenTile == null)
-            return;
 
-        if (obj && currenTile is ResourceHexTile rsTile)
-        {
-            //if(extractorSO.
-            if (!rsTile.Occoupied)
-            {
-                rsTile.Occoupied = true;
-                ExtractorBase ex = Instantiate(extractor);
-                rsTile.PlacedObject = ex;
-                ex.transform.position = rsTile.Center;
-                ex.SetResourceTile(rsTile);
-            }
-        }
-    }
 
 
 }

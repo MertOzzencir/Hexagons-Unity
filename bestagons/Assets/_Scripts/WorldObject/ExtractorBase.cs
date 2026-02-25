@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class ExtractorBase : HexPlaceable
@@ -22,7 +23,7 @@ public class ExtractorBase : HexPlaceable
 
     public void SetResourceTile(ResourceHexTile next)
     {
-        CurrentTile = next;
+        PlaceableTile = next;
     }
 
     private void OnToolPlaced(Placeable placeable, GameObject obj)
@@ -41,55 +42,70 @@ public class ExtractorBase : HexPlaceable
         {
             BaseStorage = storage;
             BaseStorage.InitilizeTools(this);
-            SubscribeStorage();
+            BaseStorage.OnStorageAvaliable += ToolsActiveMode;
+
         }
 
         TryStartWorking();
     }
 
-    private void TryStartWorking()
+    public void TryStartWorking()
     {
         if (BaseDrill != null && BaseFeeder != null && BaseStorage != null)
         {
-            BaseDrill.enabled = true;
-            BaseFeeder.enabled = true;
-            BaseStorage.enabled = true;
+            if (PlaceableTile != null)
+            {
+                BaseDrill.StartTool();
+                BaseFeeder.StartTool();
+            }
         }
     }
 
-    private void SubscribeStorage()
+    private void ToolsActiveMode(bool available)
     {
-        BaseStorage.OnStorageAvaliable += OnStorageAvaliable;
-    }
-
-    private void OnStorageAvaliable(bool available)
-    {
-        if (BaseDrill != null && BaseFeeder != null)
+        if (available)
         {
-            BaseDrill.enabled = available;
-            BaseFeeder.enabled = available;
+            TryStartWorking();
+        }
+        else
+        {
+            if (BaseDrill != null)
+                BaseDrill.CloseTool();
+            if (BaseFeeder != null)
+                BaseFeeder.CloseTool();
         }
     }
 
     public void OnStoragePicked()
     {
-        BaseStorage.OnStorageAvaliable -= OnStorageAvaliable;
+        BaseStorage.OnStorageAvaliable -= ToolsActiveMode;
         BaseStorage = null;
 
-        StopWorking();
+        ToolsActiveMode(false);
     }
 
     public void RemoveTool(ITools tool)
     {
         if (tool is Drill) BaseDrill = null;
         else if (tool is Feeder) BaseFeeder = null;
-        StopWorking();
+        ToolsActiveMode(false);
     }
-    private void StopWorking()
+    public override void OnPickedFromTile()
     {
-        if (BaseDrill != null)
-            BaseDrill.enabled = false;
-        if (BaseFeeder != null)
-            BaseFeeder.enabled = false;
+        base.OnPickedFromTile();
+        ToolsActiveMode(false);
+
+    }
+    public override void OnPlacedTile(HexTile tile)
+    {
+        base.OnPlacedTile(tile);
+        CurrentTile = (ResourceHexTile)tile;
+        SetResourceTile(CurrentTile);
+        TryStartWorking();
+    }
+
+    public override void OnAroundTilesChanged()
+    {
+        Debug.Log("Extractor Listening Tiles");
     }
 }

@@ -15,6 +15,10 @@ public class Feeder : MonoBehaviour, ITools
     {
         rb = GetComponent<Rigidbody>();
     }
+    void Start()
+    {
+
+    }
     private void Update()
     {
         if (CurrentBase.BaseStorage != null)
@@ -25,6 +29,8 @@ public class Feeder : MonoBehaviour, ITools
                 return;
             }
         }
+        else
+            return;
         if (onWayToStorageMaterials.Count != 0)
         {
 
@@ -48,25 +54,25 @@ public class Feeder : MonoBehaviour, ITools
     }
     public void StoreMaterial(Materials material)
     {
-        if (CurrentBase.BaseStorage.GetEmptySlot() - reservedSlots > 0)
+        if (CurrentBase.BaseStorage.TotalEmptySlot() - reservedSlots > 0)
         {
-            Debug.Log("Avaliable Store Material?");
             ReserveStock(+1);
             onWayToStorageMaterials.Add(material);
         }
     }
-    public void ReserveStock(int i)
-    {
-        reservedSlots += i;
-    }
+
     public void InitilizeTools(ExtractorBase extractorBase)
     {
-        currentTimer = CalculateBaseTimer(extractorBase.CurrentTile.ResourceData.Depth);
+        rb = GetComponent<Rigidbody>();
         rb.isKinematic = true;
+        Destroy(rb);
+
+        GetComponent<Collider>().isTrigger = true;
         this.CurrentBase = extractorBase;
         transform.parent = CurrentBase.FeederPlacement.transform;
         transform.position = CurrentBase.FeederPlacement.transform.position;
     }
+
     public float CalculateBaseTimer(Depth tileHardness)
     {
         foreach (var a in feederData.DepthMultiplierList)
@@ -78,6 +84,29 @@ public class Feeder : MonoBehaviour, ITools
         }
         return feederData.BaseTimer;
     }
+    public void StartTool()
+    {
+        enabled = true;
+        currentTimer = CalculateBaseTimer(CurrentBase.CurrentTile.ResourceData.Depth);
+    }
+    public void CloseTool()
+    {
+        enabled = false;
+    }
+    public void ReserveStock(int i)
+    {
+        reservedSlots += i;
+    }
+
+    public void Detach()
+    {
+        GetComponent<Collider>().isTrigger = false;
+        enabled = false;
+        transform.SetParent(null);
+        if (CurrentBase == null) return;
+        CurrentBase.RemoveTool(this);
+        CurrentBase = null;
+    }
     void OnEnable()
     {
         timer = 0f;
@@ -85,16 +114,5 @@ public class Feeder : MonoBehaviour, ITools
         Debug.Log("Disabled");
         reservedSlots = 0;
     }
-    public void Detach()
-    {
-        enabled = false;
-        transform.SetParent(null);
-        if (CurrentBase == null) return;
-        CurrentBase.RemoveTool(this);
-        CurrentBase = null;
-    }
-
-
 }
-public enum FeederType { Fast, Slow, Heavy }
 
