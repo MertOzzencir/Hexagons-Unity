@@ -115,7 +115,7 @@ Transform:
   m_GameObject: {fileID: 120806521905336019}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.75, y: 7.53, z: -0.13}
+  m_LocalPosition: {x: -4.21, y: 3.12, z: -0.13}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -147,14 +147,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 817608751930902660}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.1865559, z: 0}
+  m_LocalRotation: {x: 6.203855e-25, y: 0.037481204, z: -0, w: 0.9992974}
+  m_LocalPosition: {x: -0, y: 1.202, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5571738231101224949}
   m_Father: {fileID: 4672722326358855513}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 4.296, z: 0}
 --- !u!33 &9008392238699628943
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -236,7 +236,7 @@ Transform:
   m_GameObject: {fileID: 1012480931488117548}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.88, y: 0, z: -7.93}
+  m_LocalPosition: {x: 6.98, y: -0, z: 0.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -330,14 +330,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6330879133029185986}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 7.087775, z: 0.010098457}
+  m_LocalRotation: {x: 0.0000000012805685, y: -0, z: -0.020817958, w: 0.99978334}
+  m_LocalPosition: {x: -0.619, y: 6.649, z: 0.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8257368120926661711}
   m_Father: {fileID: 5322566438215780250}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -2.386}
 --- !u!33 &1727731683773314267
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -552,6 +552,7 @@ MonoBehaviour:
   target: {fileID: 1038949471542688629}
   hint: {fileID: 2536396701194398300}
   targetGoal: {fileID: 8864694226998003096}
+  rig: {fileID: 0}
 --- !u!114 &499509578328481663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -571,6 +572,7 @@ MonoBehaviour:
     PlacedObject: {fileID: 0}
   outputTransform: {fileID: 500911564783005841}
   inputTransform: {fileID: 7898844703010005618}
+  CurrentCarryingMaterial: {fileID: 0}
 --- !u!54 &7797149251879901107
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -633,8 +635,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VerticalMovementController
   downDirection: {fileID: 8122125365043184884}
   rideHeight: 3
-  rideSpringStrength: 700
-  rideSpringDamper: 100
 --- !u!114 &-3128213299855581422
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -647,58 +647,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4925e814c6b9b864cac0c7ca9d177da9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HorizontalMovementController
-  maxForce: 25
-  acceleration: 250
-  accelerationFactorFromDot:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: -1
-      value: 2
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  maxAccelForce: 250
-  MaxAccelerationForceFactorFromDot:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: -1
-      value: 2
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  forceScale: {x: 1, y: 0, z: 1}
 --- !u!114 &-5199683793903910103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -711,8 +659,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40f5fbb3915d3684c9d4047863608cd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RotationController
-  uprightCorrectionStrength: 150
-  uprightCorrectionDamper: 25
 --- !u!114 &-8299894844055907138
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -725,6 +671,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b80f6b0cee4ead4fbbd270eddd2ef70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AutomationArmInteractionController
+  movementData: {fileID: 11400000, guid: 6070822bd3a2e6d40831eabda33132c2, type: 2}
 --- !u!114 &2838521699817925855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -780,7 +727,7 @@ Transform:
   m_GameObject: {fileID: 7920656724540251973}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.4165826, y: 8.890386, z: 0.0037240982}
+  m_LocalPosition: {x: -5.18, y: 4.68, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -844,7 +791,7 @@ Transform:
   m_GameObject: {fileID: 9109820643372531361}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.4165826, y: 0.61605453, z: -0.006374359}
+  m_LocalPosition: {x: -6.267, y: 0.358, z: 0.048}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

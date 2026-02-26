@@ -323,6 +323,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 408b4a42fd2e532479a12504d0839255, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FeederInteractionController
+  movementData: {fileID: 11400000, guid: 6070822bd3a2e6d40831eabda33132c2, type: 2}
+  verticalMultiplier: 30
 --- !u!114 &2176735807494055628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,58 +337,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4925e814c6b9b864cac0c7ca9d177da9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HorizontalMovementController
-  maxForce: 25
-  acceleration: 250
-  accelerationFactorFromDot:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: -1
-      value: 2
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  maxAccelForce: 250
-  MaxAccelerationForceFactorFromDot:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: -1
-      value: 2
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  forceScale: {x: 1, y: 0, z: 1}
 --- !u!114 &1711552895157749551
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -401,8 +351,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VerticalMovementController
   downDirection: {fileID: 1601724886737011918}
   rideHeight: 3
-  rideSpringStrength: 700
-  rideSpringDamper: 100
 --- !u!114 &4407552347974497004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -415,5 +363,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40f5fbb3915d3684c9d4047863608cd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RotationController
-  uprightCorrectionStrength: 150
-  uprightCorrectionDamper: 25

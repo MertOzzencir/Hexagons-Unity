@@ -43,9 +43,9 @@ public class ExtractorBase : HexPlaceable
             BaseStorage = storage;
             BaseStorage.InitilizeTools(this);
             BaseStorage.OnStorageAvaliable += ToolsActiveMode;
-
         }
 
+        SendInformationToAroundTiles();
         TryStartWorking();
     }
 
@@ -55,8 +55,10 @@ public class ExtractorBase : HexPlaceable
         {
             if (PlaceableTile != null)
             {
-                BaseDrill.StartTool();
-                BaseFeeder.StartTool();
+                if (!BaseDrill.enabled)
+                    BaseDrill.StartTool();
+                if (!BaseFeeder.enabled)
+                    BaseFeeder.StartTool();
             }
         }
     }
@@ -88,6 +90,7 @@ public class ExtractorBase : HexPlaceable
     {
         if (tool is Drill) BaseDrill = null;
         else if (tool is Feeder) BaseFeeder = null;
+        SendInformationToAroundTiles();
         ToolsActiveMode(false);
     }
     public override void OnPickedFromTile()

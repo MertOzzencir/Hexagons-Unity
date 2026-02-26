@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class InteractionController : MonoBehaviour
@@ -11,21 +12,27 @@ public class InteractionController : MonoBehaviour
     }
 
 
-
+    RaycastHit[] results = new RaycastHit[30];
     void Update()
     {
         if (currentObject == null)
             return;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, hexLayerMask))
+        int hitCount = Physics.RaycastNonAlloc(ray, results);
+        System.Array.Sort(results, 0, hitCount, Comparer<RaycastHit>.Create((a, b) => a.distance.CompareTo(b.distance)));
+        MonoBehaviour mb = (MonoBehaviour)currentObject;
+        for (int i = 0; i < hitCount; i++)
         {
-            currentObject.Carry(hit.point);
+            if (results[i].transform.gameObject != mb.gameObject)
+            {
+                currentObject.Carry(results[i].point);
+                return;
+            }
         }
-        else
-        {
-            currentObject.Drop();
-            currentObject = null;
-        }
+
+        currentObject.Drop();
+        currentObject = null;
+
 
     }
     void FixedUpdate()

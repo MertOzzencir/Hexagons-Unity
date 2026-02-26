@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 public class AutomationArmController : MonoBehaviour
 {
@@ -6,9 +7,8 @@ public class AutomationArmController : MonoBehaviour
     [SerializeField] private Transform target;
     [SerializeField] private Transform hint;
     [SerializeField] private Transform targetGoal;
+    [SerializeField] private Rig rig;
 
-    Storage outputStorage;
-    Storage inputStorage;
     Materials currentMaterial;
     bool transformMode;
     void Awake()
@@ -19,10 +19,26 @@ public class AutomationArmController : MonoBehaviour
     {
         if (currentMaterial == null) return;
 
+        Vector3 pivot = transform.position;
+
+        Vector3 currentDir = target.position - pivot;
+        Vector3 targetDir = targetGoal.position - pivot;
+        currentDir.y = 0;
+        targetDir.y = 0;
+
+        float radius = targetDir.magnitude;
+        currentDir = currentDir.normalized * radius;
+
+        Vector3 slerpedDir = Vector3.Slerp(currentDir, targetDir, 2f * Time.deltaTime);
+
+        float targetY = targetGoal.position.y;
+        float currentY = Mathf.Lerp(target.position.y, targetY, 4f * Time.deltaTime);
+
+        target.position = pivot + slerpedDir + Vector3.up * currentY;
+
         Vector3 lookDirection = (targetGoal.transform.position - transform.position).normalized;
-        Vector3 lookDirection2 = Vector3.Cross(Vector3.up, lookDirection);  //Fix the forward issue
+        Vector3 lookDirection2 = Vector3.Cross(Vector3.up, lookDirection);
         Quaternion lookQuaternion = Quaternion.LookRotation(lookDirection2);
-        target.position = Vector3.MoveTowards(target.position, targetGoal.position, 2f * Time.deltaTime);
         target.transform.rotation = Quaternion.Lerp(target.transform.rotation, lookQuaternion, 10f * Time.deltaTime);
 
         float xDistance = target.transform.position.x - transform.position.x;
@@ -34,33 +50,33 @@ public class AutomationArmController : MonoBehaviour
         {
             if (transformMode)
             {
-                outputStorage.Remove(currentMaterial);
-                currentMaterial.transform.parent = target;
-                baseArm.TryToGiveToInput();
+                if (baseArm.OutputStorage != null)
+                {
+                    baseArm.OutputSuccess();
+                    currentMaterial.transform.parent = target;
+                    baseArm.TryToGiveToInput();
+                }
             }
             else
             {
-                if (inputStorage != null)
+                if (baseArm.InputStorage != null)
                 {
-                    inputStorage.Add(currentMaterial);
                     currentMaterial = null;
-                    inputStorage = null;
+                    baseArm.InputSuccess();
+                    baseArm.TryToTakeFromOutput();
                 }
             }
         }
-
     }
     public void Output(Vector3 destPosition, Materials pickedMaterials, Storage outputStorage)
     {
-        transformMode = true;
-        this.outputStorage = outputStorage;
-        currentMaterial = pickedMaterials;
         enabled = true;
+        transformMode = true;
         targetGoal.position = destPosition;
+        currentMaterial = pickedMaterials;
     }
     public void Input(Vector3 position, Storage inputStorage)
     {
-        this.inputStorage = inputStorage;
         transformMode = false;
         targetGoal.position = position;
     }

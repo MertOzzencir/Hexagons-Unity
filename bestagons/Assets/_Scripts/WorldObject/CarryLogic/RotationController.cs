@@ -4,8 +4,8 @@ public class RotationController : MonoBehaviour
 {
     [Header("Rotation")]
 
-    [SerializeField] private float uprightCorrectionStrength;
-    [SerializeField] private float uprightCorrectionDamper;
+    public float uprightCorrectionStrength{get;set;}
+    public float uprightCorrectionDamper{get;set;}
     private Vector3 rotAxis;
     private float rotRadians;
    

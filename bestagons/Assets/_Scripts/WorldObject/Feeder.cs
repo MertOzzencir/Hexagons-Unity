@@ -43,9 +43,9 @@ public class Feeder : MonoBehaviour, ITools
             {
                 Materials currentMaterial = onWayToStorageMaterials[0];
                 Materials sa = Instantiate(currentMaterial);
+                Debug.Log("Sending Material From Feeder");
                 CurrentBase.BaseStorage.Add(sa);
                 onWayToStorageMaterials.Remove(currentMaterial);
-                Debug.Log("Sa counter");
                 ReserveStock(-1);
             }
             else

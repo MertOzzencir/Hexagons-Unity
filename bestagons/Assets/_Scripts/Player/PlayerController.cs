@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private VerticalMovementController verticalMovement;
-    private HorizontalMovementController horizontalMovement;
+    [SerializeField] private LocomotionSO movementData;
+    private VerticalMovementController verticalController;
+    private HorizontalMovementController horizontalController;
     private RotationController rotationController;
 
     private Ray ray;
@@ -14,14 +15,38 @@ public class PlayerController : MonoBehaviour
     private Camera cam;
     void Awake()
     {
-        verticalMovement = GetComponent<VerticalMovementController>();
-        horizontalMovement = GetComponent<HorizontalMovementController>();
-        rotationController = GetComponent<RotationController>();
 
+        verticalController = GetComponent<VerticalMovementController>();
+        horizontalController = GetComponent<HorizontalMovementController>();
+        rotationController = GetComponent<RotationController>();
         rb = GetComponent<Rigidbody>();
-        Quaternion deneme = Quaternion.Euler(30, 30, 30);
-        Debug.Log(Quaternion.Inverse(deneme));
+
+        SetMovementData();
+      
         cam = Camera.main;
+    }
+    private void SetMovementData()
+    {
+        verticalController.rideHeight = movementData.RideHeight;
+        verticalController.rideSpringDamper = movementData.RideSpringDamper;
+        verticalController.rideSpringStrength = movementData.RideSpringStrength;
+
+        horizontalController.maxForce = movementData.MaxForce;
+        horizontalController.acceleration = movementData.Acceleration;
+        horizontalController.accelerationFactorFromDot = movementData.AccelerationFactorFromDot;
+        horizontalController.maxAccelForce = movementData.MaxAccelForce;
+        horizontalController.MaxAccelerationForceFactorFromDot = movementData.MaxAccelerationForceFactorFromDot;
+        horizontalController.forceScale = movementData.ForceScale;
+
+        rotationController.uprightCorrectionDamper = movementData.UprightCorrectionDamper;
+        rotationController.uprightCorrectionStrength = movementData.UprightCorrectionStrength;
+
+        rb.mass = movementData.Mass;
+        rb.interpolation = movementData.Interpolate;
+        rb.collisionDetectionMode = movementData.CollisionDetection;
+        rb.constraints = movementData.Constraints;
+        rb.isKinematic = movementData.IsKinematic;
+        rb.linearDamping = movementData.LinearDamping;
     }
     void Update()
     {
@@ -42,12 +67,12 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        verticalMovement.VerticalMovement(rb);
-        horizontalMovement.HorizontalMovement(lookDirection, rb);
+        verticalController.VerticalMovement(rb, verticalController.rideHeight);
+        horizontalController.HorizontalMovement(lookDirection, rb);
         rotationController.UpdateUprightForce(upRight);
-        
-        verticalMovement.ApplyLogic(rb);
-        horizontalMovement.ApplyLogic(rb);
+
+        verticalController.ApplyLogic(rb);
+        horizontalController.ApplyLogic(rb);
         rotationController.ApplyLogic(rb);
     }
 

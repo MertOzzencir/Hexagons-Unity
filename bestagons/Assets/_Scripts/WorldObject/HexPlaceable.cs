@@ -19,5 +19,12 @@ public abstract class HexPlaceable : MonoBehaviour
             PlaceableTile = null;
         }
     }
+    public void SendInformationToAroundTiles()
+    {
+        if(PlaceableTile!= null)
+        {
+            PlaceableTile.FireEventToOtherTiles();
+        }
+    }
 
 }

@@ -3,16 +3,16 @@ using UnityEngine;
 public class HorizontalMovementController : MonoBehaviour
 {
     [Header("Locomotion")]
-    [SerializeField] private float maxForce;
-    [SerializeField] private float acceleration;
-    [SerializeField] private AnimationCurve accelerationFactorFromDot;
-    [SerializeField] private float maxAccelForce;
-    [SerializeField] private AnimationCurve MaxAccelerationForceFactorFromDot;
-    [SerializeField] private Vector3 forceScale;
+    public float maxForce { get; set; }
+    public float acceleration { get; set; }
+    public AnimationCurve accelerationFactorFromDot { get; set; }
+    public float maxAccelForce { get; set; }
+    public AnimationCurve MaxAccelerationForceFactorFromDot { get; set; }
+    public Vector3 forceScale { get; set; }
     private Vector3 mGoalVel;
     private Vector3 LocoMovement;
-   
-    public void HorizontalMovement(Vector3 directionMovement,Rigidbody rb)
+
+    public void HorizontalMovement(Vector3 directionMovement, Rigidbody rb)
     {
         Vector3 currentVelocity = mGoalVel.normalized;
 
@@ -31,5 +31,5 @@ public class HorizontalMovementController : MonoBehaviour
     {
         rb.AddForce(Vector3.Scale(LocoMovement * rb.mass, forceScale));
     }
-   
+
 }

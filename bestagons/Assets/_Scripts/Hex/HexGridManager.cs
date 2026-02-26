@@ -22,10 +22,13 @@ public class HexGridManager : MonoBehaviour
     {
         if (Instance == null)
             Instance = this;
+
     }
     void Start()
     {
         hexRenderer = FindAnyObjectByType<HexRenderer>();
+        HexGeneration();
+
     }
 
     private void HexGeneration()
@@ -56,12 +59,14 @@ public class HexGridManager : MonoBehaviour
 
         ResourceHexTile normalTile5 = new ResourceHexTile(new HexCoord(-1, 0).GetWorldPosition(outerSize), hexDatas[1]);
         ResourceHexTile normalTile6 = new ResourceHexTile(new HexCoord(-1, 1).GetWorldPosition(outerSize), hexDatas[2]);
+        ResourceHexTile normalTile7 = new ResourceHexTile(new HexCoord(-1, 2).GetWorldPosition(outerSize), hexDatas[2]);
         hexTiles[new HexCoord(0, 1)] = normalTile;
         hexTiles[new HexCoord(1, 0)] = normalTile2;
         hexTiles[new HexCoord(1, -1)] = normalTile3;
         hexTiles[new HexCoord(0, -1)] = normalTile4;
         hexTiles[new HexCoord(-1, 0)] = normalTile5;
         hexTiles[new HexCoord(-1, 1)] = normalTile6;
+        hexTiles[new HexCoord(-1, 2)] = normalTile7;
         int i = 0;
         foreach (var a in hexTiles)
         {
@@ -112,19 +117,11 @@ public class HexGridManager : MonoBehaviour
         }
         Gizmos.DrawSphere(worldPos, 0.2f);
     }
-    private void OnValidate()
-    {
-        if (outerSize < innerSize)
-            outerSize = innerSize;
-
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.delayCall += () =>
-        {
-            if (this != null)
-                HexGeneration();
-        };
-#endif
-    }
+    // private void OnValidate()
+    // {
+    //     if (outerSize < innerSize)
+    //         outerSize = innerSize;
+    // }
 }
 
 

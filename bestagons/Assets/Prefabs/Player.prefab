@@ -224,6 +224,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 090f6e07ffcee714b8b090b52833d5d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  movementData: {fileID: 11400000, guid: 3413338e30fa1de40ad2614b577151e3, type: 2}
 --- !u!114 &1135591947924287750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -238,8 +239,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   downDirection: {fileID: 2472907931071839767}
   rideHeight: 1.5
-  rideSpringStrength: 2000
-  rideSpringDamper: 350
 --- !u!114 &8038574567750014248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -252,58 +251,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4925e814c6b9b864cac0c7ca9d177da9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HorizontalMovementController
-  maxForce: 8
-  acceleration: 30
-  accelerationFactorFromDot:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: -1
-      value: 2
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  maxAccelForce: 50
-  MaxAccelerationForceFactorFromDot:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: -1
-      value: 2
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  forceScale: {x: 1, y: 0, z: 1}
 --- !u!114 &3615678807736192110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -323,10 +270,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 119
   tempIndicator: {fileID: 0}
-  extractor: {fileID: 2233193201271973610, guid: eff036bcf6ab0884cb9644f5c3f577f2, type: 3}
-  drillPrefab: {fileID: 4307551122641194023, guid: 890a83fecc122d849be6e69b1d62046f, type: 3}
-  feederPrefab: {fileID: 7184533565447350121, guid: 61ad4b8f3ac469a4a91fa9b76f74842a, type: 3}
-  storagePrefab: {fileID: 4840707052342835895, guid: 403e4143178dec2459f0492c18b10832, type: 3}
+  TileInCursor:
+    TileData: {fileID: 0}
+    Center: {x: 0, y: 0, z: 0}
+    Occoupied: 0
+    PlacedObject: {fileID: 0}
 --- !u!114 &2923855696082157025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -354,8 +302,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40f5fbb3915d3684c9d4047863608cd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RotationController
-  uprightCorrectionStrength: 1500
-  uprightCorrectionDamper: 250
 --- !u!1 &8886931679394818147
 GameObject:
   m_ObjectHideFlags: 0

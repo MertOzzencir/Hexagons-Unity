@@ -3,15 +3,15 @@ using UnityEngine;
 public class VerticalMovementController : MonoBehaviour
 {
     [SerializeField] private Transform downDirection;
-    [SerializeField] private float rideHeight;
-    [SerializeField] private float rideSpringStrength;
-    [SerializeField] private float rideSpringDamper;
+    public float rideHeight;
+    public float rideSpringStrength { get; set; }
+    public float rideSpringDamper { get; set; }
     public Vector3 VerticalDirection { get; private set; }
     public float VerticalOffSetForce { get; private set; } = 1f;
 
     Ray ray;
-  
-    public void VerticalMovement(Rigidbody rb)
+
+    public void VerticalMovement(Rigidbody rb, float rideHeightFeed)
     {
         ray = new Ray(transform.position, downDirection.forward);
 
@@ -31,7 +31,7 @@ public class VerticalMovementController : MonoBehaviour
 
             float relVel = rayDirVel - otherDirVel;
 
-            float x = hit.distance - rideHeight;
+            float x = hit.distance - rideHeightFeed;
             VerticalOffSetForce = x * rideSpringStrength - relVel * rideSpringDamper;
             VerticalDirection = rayDir;
 

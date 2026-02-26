@@ -5,18 +5,23 @@ public class AutomationArm : HexPlaceable
     [SerializeField] private Transform outputTransform;
     [SerializeField] private Transform inputTransform;
     private AutomationArmController movementController;
-    private Storage outputStorage;
-    private Storage inputStorage;
+    public Storage OutputStorage { get; private set; }
+    public Storage InputStorage { get; private set; }
+    public Materials CurrentCarryingMaterial;
     void Start()
     {
         movementController = GetComponent<AutomationArmController>();
     }
-
-    public void FindOutputStorage()
+    void Update()
     {
-        outputStorage = FindStorageAtPosition(outputTransform.position);
-        inputStorage = FindStorageAtPosition(inputTransform.position);
-        TryToTakeFromOutput();
+        if (CurrentCarryingMaterial == null)
+            TryToTakeFromOutput();
+    }
+
+    public void FindStorages()
+    {
+        OutputStorage = FindStorageAtPosition(outputTransform.position);
+        InputStorage = FindStorageAtPosition(inputTransform.position);
     }
     private Storage FindStorageAtPosition(Vector3 position)
     {
@@ -27,29 +32,45 @@ public class AutomationArm : HexPlaceable
 
         return hex.PlacedObject.GetComponentInChildren<Storage>();
     }
-    private void TryToTakeFromOutput()
+    public void TryToTakeFromOutput()
     {
-        if (outputStorage != null)
+        if (CurrentCarryingMaterial != null) return;
+
+        if (OutputStorage != null)
         {
-            Materials currentGoal = outputStorage.GetFirstAvaliableMaterial();
+            Materials currentGoal = OutputStorage.GetFirstAvaliableMaterial();
             if (currentGoal != null)
             {
-                movementController.Output(currentGoal.transform.position, currentGoal, outputStorage);
+                CurrentCarryingMaterial = currentGoal;
+                movementController.Output(currentGoal.transform.position, currentGoal, OutputStorage);
             }
+        }
+        else
+        {
+            FindStorages();
         }
     }
     public void TryToGiveToInput()
     {
-        if (inputStorage != null)
+        if (InputStorage != null)
         {
-            StorageSlot currentGoal = inputStorage.GetAvaliableSlot();
+            StorageSlot currentGoal = InputStorage.GetAvaliableSlot();
             Debug.Log("Avaliable Slot?");
             if (currentGoal != null)
             {
                 Debug.Log("Found Avaliable Slot");
-                movementController.Input(currentGoal.transform.position, inputStorage);
+                movementController.Input(currentGoal.transform.position, InputStorage);
             }
         }
+    }
+    public void OutputSuccess()
+    {
+        OutputStorage.Remove(CurrentCarryingMaterial);
+    }
+    public void InputSuccess()
+    {
+        InputStorage.Add(CurrentCarryingMaterial);
+        CurrentCarryingMaterial = null;
     }
     public override void OnPickedFromTile()
     {
@@ -58,11 +79,12 @@ public class AutomationArm : HexPlaceable
     public override void OnPlacedTile(HexTile tile)
     {
         base.OnPlacedTile(tile);
-        FindOutputStorage();
+        FindStorages();
     }
 
     public override void OnAroundTilesChanged()
     {
-        FindOutputStorage();
+        Debug.Log("Automotion Arm Listens");
+        FindStorages();
     }
 }

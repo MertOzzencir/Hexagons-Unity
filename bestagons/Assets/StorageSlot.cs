@@ -19,10 +19,8 @@ public class StorageSlot : MonoBehaviour
         SlotMaterial.transform.localPosition = Vector3.zero;
         Rigidbody rb = SlotMaterial.GetComponent<Rigidbody>();
         if (rb != null)
-        {
-            rb.isKinematic = true;
             Destroy(rb);
-        }
+
         SlotMaterial.MaterialStorage = baseStorage;
     }
     public Materials GetMaterial()
