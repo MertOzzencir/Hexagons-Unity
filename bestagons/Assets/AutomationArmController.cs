@@ -1,83 +1,141 @@
+using System;
+using System.Collections;
+using System.Threading;
 using UnityEngine;
-using UnityEngine.Animations.Rigging;
 
 public class AutomationArmController : MonoBehaviour
 {
-    AutomationArm baseArm;
-    [SerializeField] private Transform target;
-    [SerializeField] private Transform hint;
-    [SerializeField] private Transform targetGoal;
-    [SerializeField] private Rig rig;
 
-    Materials currentMaterial;
-    bool transformMode;
+    [Header("Editor Referances")]
+    [SerializeField] private ArmParts[] armParts;
+
+    private Vector3[] neutralRotations;
+    private AutomationArm baseArm;
     void Awake()
     {
+        neutralRotations = new Vector3[armParts.Length];
+        for (int i = 0; i < neutralRotations.Length; i++)
+        {
+            neutralRotations[i] = armParts[i].ArmObject.localRotation.eulerAngles;
+        }
         baseArm = GetComponent<AutomationArm>();
     }
-    void Update()
+
+    public IEnumerator RotateToPort(Transform targetGoal, bool sendInput)
     {
-        if (currentMaterial == null) return;
+        Transform rootPart = armParts[0].ArmObject;
 
-        Vector3 pivot = transform.position;
+        Vector3 dir = targetGoal.position - rootPart.position;
+        dir.y = 0;
+        dir.Normalize();
+        Quaternion startRot = rootPart.rotation;
+        Quaternion targetRot = Quaternion.FromToRotation(rootPart.right, dir) * startRot;
 
-        Vector3 currentDir = target.position - pivot;
-        Vector3 targetDir = targetGoal.position - pivot;
-        currentDir.y = 0;
-        targetDir.y = 0;
-
-        float radius = targetDir.magnitude;
-        currentDir = currentDir.normalized * radius;
-
-        Vector3 slerpedDir = Vector3.Slerp(currentDir, targetDir, 2f * Time.deltaTime);
-
-        float targetY = targetGoal.position.y;
-        float currentY = Mathf.Lerp(target.position.y, targetY, 4f * Time.deltaTime);
-
-        target.position = pivot + slerpedDir + Vector3.up * currentY;
-
-        Vector3 lookDirection = (targetGoal.transform.position - transform.position).normalized;
-        Vector3 lookDirection2 = Vector3.Cross(Vector3.up, lookDirection);
-        Quaternion lookQuaternion = Quaternion.LookRotation(lookDirection2);
-        target.transform.rotation = Quaternion.Lerp(target.transform.rotation, lookQuaternion, 10f * Time.deltaTime);
-
-        float xDistance = target.transform.position.x - transform.position.x;
-        float zDistance = target.transform.position.z - transform.position.z;
-        Vector3 hintSmooth = new Vector3(transform.position.x - xDistance, target.position.y, transform.position.z - zDistance);
-        hint.position = Vector3.MoveTowards(hint.position, hintSmooth, 10f * Time.deltaTime);
-
-        if (Vector3.Distance(target.position, targetGoal.position) < 0.1f)
+        float timer = 0;
+        while (timer < armParts[0].AnimationDuration)
         {
-            if (transformMode)
+            timer += Time.deltaTime;
+            float t = timer / armParts[0].AnimationDuration;
+            float curveTimer = armParts[0].AnimationStyle.Evaluate(t);
+            rootPart.rotation = Quaternion.LerpUnclamped(startRot, targetRot, curveTimer);
+            yield return null;
+        }
+        rootPart.rotation = targetRot;
+        StartCoroutine(RotateMiddleArm(targetGoal, sendInput));
+    }
+    public IEnumerator RotateMiddleArm(Transform targetGoal, bool sendInput)
+    {
+        Transform middleArm = armParts[1].ArmObject;
+        Vector3 dir = targetGoal.position - middleArm.position;
+        // Local Y açısını hesapla
+
+        Vector3 localDir = middleArm.parent.InverseTransformDirection(dir);
+        float targetAngle = Mathf.Atan2(localDir.x, localDir.z) * Mathf.Rad2Deg;
+
+        Quaternion startRot = middleArm.localRotation;
+        Vector3 startEuler = middleArm.localEulerAngles;
+        int randomAngle = UnityEngine.Random.Range(-10, 25);
+        Quaternion targetRot = Quaternion.Euler(startEuler.x, targetAngle - randomAngle, startEuler.z);
+        float timer = 0;
+        while (timer < armParts[1].AnimationDuration)
+        {
+            timer += Time.deltaTime;
+            float t = timer / armParts[1].AnimationDuration;
+            float tLerp = armParts[1].AnimationStyle.Evaluate(t);
+            middleArm.localRotation = Quaternion.Lerp(startRot, targetRot, tLerp);
+            yield return null;
+        }
+        middleArm.localRotation = targetRot;
+        StartCoroutine(RotateGrabArm(targetGoal, sendInput));
+    }
+    public IEnumerator RotateGrabArm(Transform targetGoal, bool sendInput)
+    {
+        Transform grabArm = armParts[2].ArmObject;
+        Vector3 dir = targetGoal.position - grabArm.position;
+        dir.Normalize();
+
+        // Local Y açısını hesapla
+        Debug.Log(dir);
+        Vector3 localDir = grabArm.parent.InverseTransformDirection(dir);
+        Debug.Log(localDir);
+        float targetAngle = Mathf.Atan2(localDir.x, localDir.z) * Mathf.Rad2Deg;
+
+        Quaternion startRot = grabArm.localRotation;
+        Vector3 startEuler = grabArm.localEulerAngles;
+        Quaternion targetRot = Quaternion.Euler(startEuler.x, targetAngle, startEuler.z);
+
+        float timer = 0;
+        while (timer < armParts[2].AnimationDuration)
+        {
+            timer += Time.deltaTime;
+            float t = timer / armParts[2].AnimationDuration;
+            float tLerp = armParts[2].AnimationStyle.Evaluate(t);
+            grabArm.localRotation = Quaternion.Lerp(startRot, targetRot, tLerp);
+            yield return null;
+        }
+        grabArm.localRotation = targetRot;
+
+        if (sendInput)
+        {
+            baseArm.TakeOutMaterial();
+            baseArm.CurrentCarryingMaterial.transform.parent = armParts[2].ArmObject;
+            baseArm.CurrentCarryingMaterial.transform.localPosition = Vector3.zero;
+        }
+        else
+        {
+            baseArm.GiveMaterial();
+        }
+
+        StartCoroutine(SetNeutral(sendInput));
+    }
+
+    public IEnumerator SetNeutral(bool sendInput)
+    {
+        for (int i = 0; i < armParts.Length; i++)
+        {
+            Vector3 currentEuler = neutralRotations[i];
+            Quaternion startRot = armParts[i].ArmObject.localRotation;
+            Quaternion targetRot = Quaternion.Euler(currentEuler.x, currentEuler.y, currentEuler.z);
+            float timer = 0;
+            while (timer < armParts[i].AnimationDuration)
             {
-                if (baseArm.OutputStorage != null)
-                {
-                    baseArm.OutputSuccess();
-                    currentMaterial.transform.parent = target;
-                    baseArm.TryToGiveToInput();
-                }
-            }
-            else
-            {
-                if (baseArm.InputStorage != null)
-                {
-                    currentMaterial = null;
-                    baseArm.InputSuccess();
-                    baseArm.TryToTakeFromOutput();
-                }
+                timer += Time.deltaTime;
+                float t = timer / armParts[i].AnimationDuration;
+                float tLerp = armParts[i].AnimationStyle.Evaluate(t);
+                armParts[i].ArmObject.localRotation = Quaternion.Lerp(startRot, targetRot, tLerp);
+                yield return null;
             }
         }
-    }
-    public void Output(Vector3 destPosition, Materials pickedMaterials, Storage outputStorage)
-    {
-        enabled = true;
-        transformMode = true;
-        targetGoal.position = destPosition;
-        currentMaterial = pickedMaterials;
-    }
-    public void Input(Vector3 position, Storage inputStorage)
-    {
-        transformMode = false;
-        targetGoal.position = position;
+        baseArm.OutputInputMode(sendInput);
     }
 }
+
+[Serializable]
+public class ArmParts
+{
+    public Transform ArmObject;
+    public float AnimationDuration;
+    public AnimationCurve AnimationStyle;
+
+}
+

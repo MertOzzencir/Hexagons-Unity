@@ -2,7 +2,7 @@ using UnityEngine;
 
 public abstract class HexPlaceable : MonoBehaviour
 {
-    public HexTile PlaceableTile;
+    public HexTile PlaceableTile{get;set;}
     public abstract void OnAroundTilesChanged();
     public virtual void OnPlacedTile(HexTile tile)
     {

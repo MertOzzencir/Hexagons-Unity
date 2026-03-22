@@ -6,6 +6,7 @@ using UnityEngine;
 public class Storage : MonoBehaviour, ITools
 {
     public event Action<bool> OnStorageAvaliable;
+    public event Action OnAdded;
     [SerializeField] private Transform Slots;
     public bool IsFull { get; set; }
     private Rigidbody rb;
@@ -45,6 +46,7 @@ public class Storage : MonoBehaviour, ITools
             currentSlot.AddOnSlot(material);
         else
             slotFromSide.AddOnSlot(material);
+        OnAdded?.Invoke();
         CheckStorageCapacity(out StorageSlot no);
         return true;
     }
