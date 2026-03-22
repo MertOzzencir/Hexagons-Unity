@@ -14,23 +14,6 @@ public class AutoKinematicManager : MonoBehaviour
             Instance = this;
     }
 
-    // void FixedUpdate()
-    // {
-    //     foreach (var a in sceneList)
-    //     {
-    //         if (a.rb == null || a.rb.isKinematic)
-    //             continue;
-    //         if (a.rb.linearVelocity.magnitude < 0.1f && a.rb.angularVelocity.magnitude < 0.1f)
-    //         {
-    //             a.timer += Time.fixedDeltaTime;
-    //             if (a.timer > 2f)
-    //             {
-    //                 a.timer = 0;
-    //                 a.rb.isKinematic = true;
-    //             }
-    //         }
-    //     }
-    // }
     public void WakeUp(Rigidbody rb)
     {
         foreach (var a in sceneList)

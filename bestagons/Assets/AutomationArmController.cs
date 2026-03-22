@@ -8,6 +8,7 @@ public class AutomationArmController : MonoBehaviour
 
     [Header("Editor Referances")]
     [SerializeField] private ArmParts[] armParts;
+    [SerializeField] private Transform outputPort;
 
     private Vector3[] neutralRotations;
     private AutomationArm baseArm;
@@ -47,7 +48,6 @@ public class AutomationArmController : MonoBehaviour
     {
         Transform middleArm = armParts[1].ArmObject;
         Vector3 dir = targetGoal.position - middleArm.position;
-        // Local Y açısını hesapla
 
         Vector3 localDir = middleArm.parent.InverseTransformDirection(dir);
         float targetAngle = Mathf.Atan2(localDir.x, localDir.z) * Mathf.Rad2Deg;
@@ -74,7 +74,6 @@ public class AutomationArmController : MonoBehaviour
         Vector3 dir = targetGoal.position - grabArm.position;
         dir.Normalize();
 
-        // Local Y açısını hesapla
         Debug.Log(dir);
         Vector3 localDir = grabArm.parent.InverseTransformDirection(dir);
         Debug.Log(localDir);
@@ -99,6 +98,8 @@ public class AutomationArmController : MonoBehaviour
         {
             baseArm.TakeOutMaterial();
             baseArm.CurrentCarryingMaterial.transform.parent = armParts[2].ArmObject;
+            baseArm.CurrentCarryingMaterial.transform.localPosition = Vector3.zero;
+            baseArm.CurrentCarryingMaterial.transform.parent = outputPort;
             baseArm.CurrentCarryingMaterial.transform.localPosition = Vector3.zero;
         }
         else
