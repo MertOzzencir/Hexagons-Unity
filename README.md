@@ -1,6 +1,6 @@
 Hex-Based Automation Prototype
 A hex grid automation game prototype inspired by Factorio and Astroneer. Features modular extractors with swappable components (drill, feeder, storage) and procedural automation arms for material transport.
-Show Image
+![Sceen](screenshots/automation.gif)
 Modular extractor system with automation arm transferring materials
 🎯 Project Goals
 Build a hex-based automation game where machines are modular — instead of single-purpose buildings, players assemble extractors from interchangeable parts. Prototype core systems before committing to full development.
